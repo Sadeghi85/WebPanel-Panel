@@ -24,11 +24,17 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
-$env = $app->detectEnvironment(array(
+$env = $app->detectEnvironment(function()
+{
+    return array_pop(explode('.', $_SERVER['SERVER_NAME']));
+});
 
-	'local' => array('your-machine-name'),
+// $env = $app->detectEnvironment(array(
 
-));
+	// 'home' => array('webpanel.home'),
+	// 'work' => array('webpanel.work'),
+
+// ));
 
 /*
 |--------------------------------------------------------------------------
