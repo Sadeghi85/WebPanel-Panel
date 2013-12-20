@@ -49,6 +49,24 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
+	
+	if ( ! Config::get('app.debug'))
+	{
+		switch ($code)
+		{
+			case 403:
+				return Response::make(View::make('error/403'), 403);
+
+			case 500:
+				return Response::make(View::make('error/500'), 500);
+				
+			case 503:
+				return Response::make(View::make('error/503'), 503);
+
+			default:
+				return Response::make(View::make('error/404'), 404);
+		}
+	}
 });
 
 /*
@@ -64,7 +82,9 @@ App::error(function(Exception $exception, $code)
 
 App::down(function()
 {
-	return Response::make("Be right back!", 503);
+	//return Response::make("Be right back!", 503);
+	
+	return Response::make(View::make('error/503'), 503);
 });
 
 /*

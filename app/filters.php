@@ -44,6 +44,33 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+Route::filter('auth.sentry', function()
+{
+	if ( ! Sentry::check()) return Redirect::route('login');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Root authentication filter.
+|--------------------------------------------------------------------------
+|
+| This filter does the same as the 'auth.sentry' filter but it checks if the user
+| has 'root' privileges.
+|
+*/
+
+Route::filter('auth.sentry.root', function()
+{
+	if ( ! Sentry::check()) return Redirect::route('login');
+
+	// Check if the user is root
+	if ( ! Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+	{
+		// Show the insufficient permissions page
+		return App::abort(403);
+	}
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter
