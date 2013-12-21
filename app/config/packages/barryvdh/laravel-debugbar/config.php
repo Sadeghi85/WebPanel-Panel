@@ -46,7 +46,7 @@ return array(
   |
   */
    'collectors' => array(
-       'phpinfo' => true,           // Php version
+       'phpinfo' => false,           // Php version
        'messages' => true,          // Messages
        'time' => true,              // Time Datalogger
        'memory' => true,            // Memory usage
@@ -55,12 +55,12 @@ return array(
        'db' => true,                // Show database (PDO) queries and bindings
        'views' => true,             // Views with their data
        'route' => true,             // Current route information
-       'laravel' => false,          // Laravel version and environment
+       'laravel' => true,          // Laravel version and environment
        'events' => false,           // All events fired
        'twig' => false,             // Twig, requires barryvdh/laravel-twigbridge
        'default_request'=> false,   // Regular or special Symfony request logger
        'symfony_request'=> true,    // Only one can be enabled..
-       'mail' => true,              // Catch mail messages
+       'mail' => false,              // Catch mail messages
        'logs' => false,             // Add the latest log messages
        'files' => false,            // Show the included files
        'config' => false,           // Display config settings

@@ -46,7 +46,7 @@ Route::filter('auth.basic', function()
 
 Route::filter('auth.sentry', function()
 {
-	if ( ! Sentry::check()) return Redirect::route('login');
+	if ( ! Sentry::check()) return Redirect::route('auth.login');
 });
 
 /*
@@ -61,7 +61,7 @@ Route::filter('auth.sentry', function()
 
 Route::filter('auth.sentry.root', function()
 {
-	if ( ! Sentry::check()) return Redirect::route('login');
+	if ( ! Sentry::check()) return Redirect::route('auth.login');
 
 	// Check if the user is root
 	if ( ! Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))

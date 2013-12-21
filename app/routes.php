@@ -13,22 +13,20 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+	return Redirect::route('overview');
 });
-
 
 Route::group(array('before' => 'auth.sentry.root'), function()
 {
-    //Route::resource('account', 'AccountController', array('except' => array('show')));
-	
-	Route::resource('groups', 'GroupsController', array());
-	Route::resource('users', 'UsersController', array());
-	Route::resource('logs', 'LogsController', array('except' => array('update')));
+	Route::resource('groups', 'GroupsController', array('except' => array('show')));
+	Route::resource('users', 'UsersController', array('except' => array('show')));
+	Route::resource('logs', 'LogsController', array('only' => array('index', 'show', 'destroy')));
 });
 
 Route::group(array('before' => 'auth.sentry'), function()
 {
-    //Route::resource('account', 'AccountController', array('except' => array('show')));
+    // Overview
+	Route::get('overview', array('as' => 'overview', 'uses' => 'OverviewController@getOverview'));
 	
 	Route::resource('groups', 'AccountController', array('except' => array('show')));
 	Route::resource('account', 'AccountController', array('except' => array('show')));
@@ -46,27 +44,10 @@ Route::group(array('before' => 'auth.sentry'), function()
 
 Route::group(array('prefix' => 'auth'), function()
 {
-
-	# Login
-	Route::get('login', array('as' => 'login', 'uses' => 'AuthController@getLogin'));
+	// Login
+	Route::get('login', array('as' => 'auth.login', 'uses' => 'AuthController@getLogin'));
 	Route::post('login', array('before' => 'csrf', 'uses' => 'AuthController@postLogin'));
-
-	# Register
-	// Route::get('signup', array('as' => 'signup', 'uses' => 'AuthController@getSignup'));
-	// Route::post('signup', 'AuthController@postSignup');
-
-	# Account Activation
-	// Route::get('activate/{activationCode}', array('as' => 'activate', 'uses' => 'AuthController@getActivate'));
-
-	# Forgot Password
-	// Route::get('forgot-password', array('as' => 'forgot-password', 'uses' => 'AuthController@getForgotPassword'));
-	// Route::post('forgot-password', 'AuthController@postForgotPassword');
-
-	# Forgot Password Confirmation
-	// Route::get('forgot-password/{passwordResetCode}', array('as' => 'forgot-password-confirm', 'uses' => 'AuthController@getForgotPasswordConfirm'));
-	// Route::post('forgot-password/{passwordResetCode}', 'AuthController@postForgotPasswordConfirm');
-
-	# Logout
-	Route::get('logout', array('as' => 'logout', 'uses' => 'AuthController@getLogout'));
-
+	
+	// Logout
+	Route::get('logout', array('as' => 'auth.logout', 'uses' => 'AuthController@getLogout'));
 });

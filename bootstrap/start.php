@@ -26,7 +26,7 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(function()
 {
-    return array_pop(explode('.', $_SERVER['SERVER_NAME']));
+    return array_pop(explode('.', @$_SERVER['SERVER_NAME']));
 });
 
 // $env = $app->detectEnvironment(array(
