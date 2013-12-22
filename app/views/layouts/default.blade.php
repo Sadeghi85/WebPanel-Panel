@@ -10,7 +10,7 @@
 
   <title>
     @section('title')
-          {{ Lang::get('title.main') }}
+          {{ Lang::get('app.title') }}
     @show
   </title>
 
@@ -46,13 +46,13 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">{{ Lang::get('title.main') }}</a>
+      <a class="navbar-brand" href="#">{{ Lang::get('app.title') }}</a>
     </div>
 
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">{{ Lang::get('site.accounts') }}</a></li>
-        <li><a href="{{ URL::Route('auth.logout') }}">{{ Lang::get('site.logout') }}</a></li>
+       {{-- <li class="active"><a href="#">{{ Lang::get('site.accounts') }}</a></li> --}}
+        <li><a href="{{ URL::Route('auth.logout') }}">{{ Lang::get('auth/messages.logout.logout') }}</a></li>
       </ul>
     </div><!--/.nav-collapse -->
 

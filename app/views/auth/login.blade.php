@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('title')
-	{{ Lang::get('title.login') }} | @parent
+	{{ Lang::get('auth/messages.login.title') }} | @parent
 @stop
 
 @section('style')
@@ -22,30 +22,26 @@
 
 		<div class="row">
       		<div class="col-md-offset-12 col-md-48">
-			<h3>{{Lang::get('site.login-message')}}</h3>
 
 			<p>&nbsp;</p>
-
-			<!-- Message -->
-			<div class="form-group {{ $errors->has('message') ? 'has-error' : '' }}">
-				{{ Form::label('message', ($errors->first('message') ? $errors->first('message') : ' '), array('class'=>'control-label')) }}
-			</div>
-
+			
 			<!-- Username -->
-			<div class="form-group">
-				{{ Form::text('username', Input::old('username'), array('class'=>'form-control', 'placeholder' => Lang::get('site.username'))) }}
+			<div class="form-group {{ $errors->has('username') ? 'has-error' : '' }}">
+				{{ Form::text('username', Input::old('username'), array('class'=>'form-control', 'placeholder' => Lang::get('auth/messages.login.username'))) }}
+				<p class="help-block">{{ $errors->first('username') }}</p>
 			</div>
 
 			<!-- Password -->
-			<div class="form-group">
-				{{ Form::password('password', array('class'=>'form-control', 'placeholder' => Lang::get('site.password'))) }}
+			<div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
+				{{ Form::password('password', array('class'=>'form-control', 'placeholder' => Lang::get('auth/messages.login.password'))) }}
+				<p class="help-block">{{ $errors->first('password') }}</p>
 			</div>
 
 			<!-- Remember me -->
 			<div class="form-group">
 				<label class="checkbox">
 					{{ Form::checkbox('remember-me', 'remember-me') }}
-					{{ Lang::get('site.remember-me') }}
+					{{ Lang::get('auth/messages.login.remember-me') }}
 				</label>
 			</div>
 
@@ -53,7 +49,7 @@
 
 			<!-- Login button -->
 			<div class="form-group">
-				{{ Form::submit(Lang::get('site.login'), array('class' => 'btn btn-lg btn-default')) }}
+				{{ Form::submit(Lang::get('auth/messages.login.login'), array('class' => 'btn btn-lg btn-default')) }}
 			</div>
 
 		{{ Form::close() }}
