@@ -2,7 +2,7 @@
 
 
 @section('title')
-	{{ 'hjkl' }} | @parent
+	{{ Lang::get('overview/messages.title') }} | @parent
 @stop
 
 @section('style')
@@ -21,5 +21,11 @@
 @stop
 
 @section('content')
-
+<div class="row">
+	<div class="col-md-72">
+		Total Memory: {{ Libraries\Sadeghi85\Overview::getTotalMemory() }}
+		<br>
+		Free Memory: {{ Libraries\Sadeghi85\Overview::getFreeMemory() }}
+	</div>
+</div>
 @stop

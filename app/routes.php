@@ -28,10 +28,10 @@ Route::group(array('before' => 'auth.sentry'), function()
     // Overview
 	Route::get('overview', array('as' => 'overview', 'uses' => 'OverviewController@getOverview'));
 	
-	Route::resource('groups', 'AccountController', array('except' => array('show')));
-	Route::resource('account', 'AccountController', array('except' => array('show')));
+	// Profile
+	Route::resource('profile', 'ProfileController', array('only' => array('index')));
+	
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +46,9 @@ Route::group(array('prefix' => 'auth'), function()
 {
 	// Login
 	Route::get('login', array('as' => 'auth.login', 'uses' => 'AuthController@getLogin'));
-	Route::post('login', array('before' => 'csrf', 'uses' => 'AuthController@postLogin'));
+	Route::post('login', array('uses' => 'AuthController@postLogin'));
 	
 	// Logout
 	Route::get('logout', array('as' => 'auth.logout', 'uses' => 'AuthController@getLogout'));
 });
+

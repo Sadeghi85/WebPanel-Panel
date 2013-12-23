@@ -161,9 +161,18 @@ text-transform: uppercase;
 }
 
 .nav-tabs {
-	margin-bottom: -1px;
-	border: 0px !important;
-	padding-left: 10px !important;
-	padding-right: 10px !important;
+	/*margin-bottom: -1px;
+	border: 0px !important;*/
+	padding-left: 150px !important;
+	padding-right: 150px !important;
+}
+
+.nav-tabs > li.nav-right{
+	float: right;
+}
+
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+
+	background-color: #eee;
 }
 

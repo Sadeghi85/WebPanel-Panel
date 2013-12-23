@@ -50,10 +50,13 @@
     </div>
 
     <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-       {{-- <li class="active"><a href="#">{{ Lang::get('site.accounts') }}</a></li> --}}
-        <li><a href="{{ URL::Route('auth.logout') }}">{{ Lang::get('auth/messages.logout.logout') }}</a></li>
-      </ul>
+		<ul class="nav navbar-nav">
+		{{-- <li class="active"><a href="#">{{ Lang::get('site.accounts') }}</a></li> --}}
+		<li class="{{ Route::currentRouteName() == 'profile.index' ? 'active' : '' }}">
+			<a href="{{ URL::Route('profile.index') }}">{{ Lang::get('profile/messages.profile') }}</a>
+		</li>
+		<li><a href="{{ URL::Route('auth.logout') }}">{{ Lang::get('auth/messages.logout.logout') }}</a></li>
+		</ul>
     </div><!--/.nav-collapse -->
 
 
@@ -63,49 +66,30 @@
 
 @section('container')
 <div class="my-fluid-container">
-  <div class="row">
-    
-    <div class="col-md-10">
-      <div class="bs-sidebar">
-        <ul class="nav bs-sidenav">
-          <li class="header">{{ Lang::get('site.tasks') }}</li>
-          
-          <?php
-            $navs = array(
-              //array('required' => true, 'label' => Lang::get('site.accounts'), 'routes' => array('default'=>'admin.account.index')),
-              //array('required' => true, 'label' => Lang::get('site.create'), 'routes' => array('default'=>'admin.account.create')),
-              //array('required' => false, 'label' => Lang::get('site.edit'), 'routes' => array('default'=>'admin.account.index', 'intended' => 'admin.account.edit')),
-            );
-          ?>
-          @foreach ($navs as $nav)
+	<div class="row">
+		<div class="col-md-72">
+			<div class="box">
+			
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#">Overview</a></li>
+					<li><a href="#">Domains</a></li>
+					<li class="nav-right"><a href="#">Users</a></li>
+					<li class="nav-right"><a href="#">Groups</a></li>
+					<li class="nav-right"><a href="#">Logs</a></li>
+				</ul>
+				
+				<p>&nbsp;</p>
 
-            @if (isset($nav['routes']))
-              @if (in_array(Route::currentRouteName(), $nav['routes']))
-                <?php $_class = 'active' ?>
-              @else
-                <?php $_class = '' ?>
-              @endif
-                @if ($nav['required'] OR $nav['routes']['intended'] == Route::currentRouteName())
-                  <li class="{{ $_class }}"><a href="{{ URL::Route($nav['routes']['default']) }}">{{{ $nav['label'] }}}</a></li>
-                @endif
-            @else
-              <li class="divider"></li>
-            @endif
-          @endforeach
-        </ul>
-      </div>
-   </div><!--/.col-->
+				<div class="row">
+					<div class="col-md-72">
+					@section('content')
 
-   <div class="col-md-62">
-     <div class="row">
-       <div class="col-md-72">
-        @section('content')
-
-        @show
-       </div>
-     </div>
-    </div><!--/.col-->
-  </div><!--/.row-->
+					@show
+					</div>
+				</div>
+			</div><!--/.box-->
+		</div><!--/.col-->
+	</div><!--/.row-->
 </div><!--/.container-->
 @show
 

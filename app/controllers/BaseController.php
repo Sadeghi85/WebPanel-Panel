@@ -16,6 +16,9 @@ class BaseController extends Controller {
 	 */
 	public function __construct()
 	{
+		// CSRF Protection
+		$this->beforeFilter('csrf', array('on' => 'post'));
+		
 		$this->messageBag = new Illuminate\Support\MessageBag;
 	}
 	

@@ -16,6 +16,8 @@ return array(
 		
 		'title' => 'Login',
 		
+		'formname' => 'Login',
+		
 		'username' => 'Username',
 		'password' => 'Password',
 		'remember-me' => 'Remember me',
