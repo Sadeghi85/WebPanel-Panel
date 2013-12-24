@@ -2,7 +2,7 @@
 
 
 @section('title')
-	{{ Lang::get('overview/messages.title') }} | @parent
+	@lang('overview/messages.title') :: @parent
 @stop
 
 @section('style')

@@ -13,7 +13,7 @@
 
 Route::get('/', function()
 {
-	return Redirect::route('overview');
+	return Redirect::route('overview.index');
 });
 
 Route::group(array('before' => 'auth.sentry.root'), function()
@@ -26,7 +26,7 @@ Route::group(array('before' => 'auth.sentry.root'), function()
 Route::group(array('before' => 'auth.sentry'), function()
 {
     // Overview
-	Route::get('overview', array('as' => 'overview', 'uses' => 'OverviewController@getOverview'));
+	Route::resource('overview', 'OverviewController', array('only' => array('index')));
 	
 	// Profile
 	Route::resource('profile', 'ProfileController', array('only' => array('index')));

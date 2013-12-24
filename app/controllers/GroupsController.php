@@ -1,6 +1,6 @@
 <?php
 
-class GroupsController extends \BaseController {
+class GroupsController extends RootController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,7 +9,11 @@ class GroupsController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		// Grab all the groups
+		$groups = Sentry::getGroupProvider()->createModel()->paginate();
+
+		// Show the page
+		return View::make('app.groups.index', compact('groups'));
 	}
 
 	/**

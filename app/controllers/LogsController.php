@@ -1,6 +1,6 @@
 <?php
 
-class LogsController extends \BaseController {
+class LogsController extends RootController {
 
 	/**
 	 * Display a listing of the resource.

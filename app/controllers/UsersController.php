@@ -1,6 +1,6 @@
 <?php
 
-class UsersController extends \BaseController {
+class UsersController extends RootController {
 
 	/**
 	 * Display a listing of the resource.
@@ -9,7 +9,11 @@ class UsersController extends \BaseController {
 	 */
 	public function index()
 	{
-		//
+		// Grab all the users
+		$users = Sentry::getUserProvider()->createModel()->paginate();
+
+		// Show the page
+		return View::make('app.users.index', compact('users'));
 	}
 
 	/**

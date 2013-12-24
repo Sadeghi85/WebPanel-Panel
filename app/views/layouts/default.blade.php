@@ -71,10 +71,11 @@
 			<div class="box">
 			
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#">Overview</a></li>
+					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}">Overview</a></li>
 					<li><a href="#">Domains</a></li>
-					<li class="nav-right"><a href="#">Users</a></li>
-					<li class="nav-right"><a href="#">Groups</a></li>
+					
+					<li class="{{ Route::currentRouteName() == 'users.index' ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}">Users</a></li>
+					<li class="{{ Route::currentRouteName() == 'groups.index' ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}">Groups</a></li>
 					<li class="nav-right"><a href="#">Logs</a></li>
 				</ul>
 				
@@ -82,9 +83,12 @@
 
 				<div class="row">
 					<div class="col-md-72">
-					@section('content')
+					
+						<!-- Notifications -->
+						@include('app/notifications')
 
-					@show
+						<!-- Content -->
+						@yield('content')
 					</div>
 				</div>
 			</div><!--/.box-->
@@ -100,6 +104,16 @@
     <script src="{{ asset('/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/assets/js/bootstrap-typeahead.min.js') }}"></script>
 
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			
+			window.setTimeout(function() {
+				//$('.close').click();
+				$(".alert").alert('close');
+			}, 5000);
+			
+		});
+	</script>
 @show
 
 </body>

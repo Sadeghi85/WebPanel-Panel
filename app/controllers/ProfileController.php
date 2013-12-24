@@ -1,6 +1,6 @@
 <?php
 
-class ProfileController extends BaseController {
+class ProfileController extends AuthorizedController {
 
 	/**
 	 * Display a listing of the resource.

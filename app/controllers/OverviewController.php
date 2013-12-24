@@ -1,11 +1,15 @@
 <?php
 
-class OverviewController extends \BaseController {
+class OverviewController extends AuthorizedController {
 
-	public function getOverview()
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function index()
 	{
 		return View::make('app.overview');
 	}
 
-	
 }
