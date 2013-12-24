@@ -64,7 +64,11 @@
 			<td>
 				{{ Form::open(array('route' => array('groups.destroy', $group->id), 'method' => 'DELETE')) }}
 					<a href="{{ route('groups.edit', $group->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
-					<button type="submit" class="btn btn-xs btn-danger">@lang('button.delete')</button>
+					@if ($group->name !== 'Root')
+						<button type="submit" class="btn btn-xs btn-danger">@lang('button.delete')</button>
+					@else
+						<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
+					@endif
 				{{ Form::close() }}
 			</td>
 		</tr>

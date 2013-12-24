@@ -13,7 +13,8 @@
 
 Route::get('/', function()
 {
-	return Redirect::route('overview.index');
+	//return Redirect::route('overview.index');
+	return Redirect::to(Session::get('loginRedirect', route('overview.index')));
 });
 
 Route::group(array('before' => 'auth.sentry.root'), function()

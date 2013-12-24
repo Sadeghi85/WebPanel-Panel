@@ -48,11 +48,15 @@ class AuthController extends BaseController {
 		{
 			// Try to log the user in
 			Sentry::authenticate(Input::only('username', 'password'), Input::get('remember-me', 0));
+			
+			// Get the page we were before
+			$redirect = Session::get('loginRedirect', route('overview.index'));
 
-			// TODO redirect
-			// Redirect to the users page
-			return Redirect::intended('')->with('success', Lang::get('auth/messages.login.success'));
-			//return Redirect::intended(route('admin.account.index'));
+			// Unset the page we were before from the session
+			Session::forget('loginRedirect');
+
+			// Redirect to the overview page
+			return Redirect::to($redirect)->with('success', Lang::get('auth/messages.login.success'));
 		}
 		catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
 		{
