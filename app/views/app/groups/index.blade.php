@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('title')
-	@lang('groups/messages.title') :: @parent
+	@lang('groups/messages.index.title') :: @parent
 @stop
 
 @section('style')
@@ -31,10 +31,10 @@
 @section('content')
 <div class="page-header">
 	<h3>
-		@lang('groups/messages.groups')
+		@lang('groups/messages.index.header')
 
 		<div class="pull-right">
-			<a href="{{ route('groups.create') }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-plus-sign"></i> @lang('groups/messages.index.create')</a>
+			<a href="{{ route('groups.create') }}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus-sign"></i> @lang('groups/messages.index.create')</a>
 		</div>
 	</h3>
 </div>
@@ -63,10 +63,12 @@
 			<td>{{ $group->created_at->diffForHumans() }}</td>
 			<td>
 				{{ Form::open(array('route' => array('groups.destroy', $group->id), 'method' => 'DELETE')) }}
-					<a href="{{ route('groups.edit', $group->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
+					
 					@if ($group->name !== 'Root')
+						<a href="{{ route('groups.edit', $group->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
 						<button type="submit" class="btn btn-xs btn-danger">@lang('button.delete')</button>
 					@else
+						<span class="btn btn-xs btn-default disabled">@lang('button.edit')</span>
 						<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
 					@endif
 				{{ Form::close() }}

@@ -1,7 +1,7 @@
-
+<p>&nbsp;</p>
 
 @if ($errors->any())
-<div class="alert alert-error alert-dismissable fade in">
+<div class="alert alert-danger alert-dismissable fade in">
 	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	<h4>Error</h4>
 	Please check the form below for errors
@@ -17,7 +17,7 @@
 @endif
 
 @if ($message = Session::get('error'))
-<div class="alert alert-error alert-dismissable fade in">
+<div class="alert alert-danger alert-dismissable fade in">
 	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 	<h4>Error</h4>
 	{{ $message }}

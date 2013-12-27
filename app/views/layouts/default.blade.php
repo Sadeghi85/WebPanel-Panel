@@ -65,22 +65,21 @@
 @show
 
 @section('container')
+
 <div class="my-fluid-container">
 	<div class="row">
 		<div class="col-md-72">
 			<div class="box">
 			
 				<ul class="nav nav-tabs">
-					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}">Overview</a></li>
-					<li><a href="#">Domains</a></li>
+					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}"><strong>Overview</strong></a></li>
+					<li><a href="#"><strong>Domains</strong></a></li>
 					
-					<li class="{{ Route::currentRouteName() == 'users.index' ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}">Users</a></li>
-					<li class="{{ Route::currentRouteName() == 'groups.index' ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}">Groups</a></li>
-					<li class="nav-right"><a href="#">Logs</a></li>
+					<li class="{{ Request::is('*users*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}"><strong>Users</strong></a></li>
+					<li class="{{ Request::is('*groups*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}"><strong>Groups</strong></a></li>
+					<li class="nav-right"><a href="#"><strong>Logs</strong></a></li>
 				</ul>
 				
-				<p>&nbsp;</p>
-
 				<div class="row">
 					<div class="col-md-72">
 					
@@ -109,7 +108,7 @@
 			
 			window.setTimeout(function() {
 				//$('.close').click();
-				$(".alert").alert('close');
+				$(".alert-success").alert('close');
 			}, 5000);
 			
 		});

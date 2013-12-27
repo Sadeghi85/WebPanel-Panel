@@ -63,14 +63,16 @@
 			<td>{{ $user->first_name }}</td>
 			<td>{{ $user->last_name }}</td>
 			<td>{{ $user->username }}</td>
-			<td>@lang('app.' . ($user->isActivated() ? 'yes' : 'no'))</td>
+			<td>@lang('general.' . ($user->isActivated() ? 'yes' : 'no'))</td>
 			<td>{{ $user->created_at->diffForHumans() }}</td>
 			<td>
 				{{ Form::open(array('route' => array('users.destroy', $user->id), 'method' => 'DELETE')) }}
-					<a href="{{ route('users.edit', $user->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
+					
 					@if (Sentry::getId() !== $user->id and $user->username !== 'root')
+						<a href="{{ route('users.edit', $user->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
 						<button type="submit" class="btn btn-xs btn-danger">@lang('button.delete')</button>
 					@else
+						<span class="btn btn-xs btn-default disabled">@lang('button.edit')</span>
 						<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
 					@endif
 				{{ Form::close() }}
