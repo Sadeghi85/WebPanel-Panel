@@ -1,7 +1,23 @@
 <?php
 
+use Cartalyst\Sentry\Users\LoginRequiredException;
+use Cartalyst\Sentry\Users\PasswordRequiredException;
+use Cartalyst\Sentry\Users\UserExistsException;
+use Cartalyst\Sentry\Users\UserNotFoundException;
+
 class UsersController extends RootController {
 
+	/**
+	 * Declare the rules for the form validation
+	 *
+	 * @var array
+	 */
+	protected $validationRules = array(
+		'username'       => 'required|min:3|unique:users,username',
+		'password'         => 'required|between:3,32',
+		'password_confirm' => 'required|between:3,32|same:password',
+	);
+	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -23,7 +39,14 @@ class UsersController extends RootController {
 	 */
 	public function create()
 	{
-		//
+		// Get all the available groups
+		$groups = Sentry::getGroupProvider()->findAll();
+
+		// Selected groups
+		$selectedGroups = Input::old('groups', array());
+
+		// Show the page
+		return View::make('app.users.create', compact('groups', 'selectedGroups'));
 	}
 
 	/**

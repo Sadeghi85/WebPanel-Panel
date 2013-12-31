@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('title')
-	@lang('users/messages.title') :: @parent
+	@lang('users/messages.index.title') :: @parent
 @stop
 
 @section('style')
@@ -31,10 +31,10 @@
 @section('content')
 <div class="page-header">
 	<h3>
-		@lang('users/messages.users')
+		@lang('users/messages.index.header')
 
 		<div class="pull-right">
-			<a href="{{ route('users.create') }}" class="btn btn-sm btn-info"><i class="glyphicon glyphicon-plus-sign"></i> @lang('users/messages.index.create')</a>
+			<a href="{{ route('users.create') }}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus-sign"></i> @lang('users/messages.index.create')</a>
 		</div>
 	</h3>
 </div>

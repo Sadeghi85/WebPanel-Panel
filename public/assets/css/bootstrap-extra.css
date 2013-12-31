@@ -65,8 +65,32 @@ body {
 	/*color: #333;*/
 }
 
+label,
+select,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+input[type="radio"],
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 5px;
+  font-weight: normal;
+}
+
 .control-label {
-	line-height: 28px;
+	float: left;
+	width: 160px;
+	padding-top: 5px;
+	text-align: right;
+}
+
+select.form-control {
+	/*width: 100% !important;*/
 }
 
 .box {

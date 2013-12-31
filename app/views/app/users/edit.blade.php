@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('title')
-	@lang('groups/messages.create.title') :: @parent
+	@lang('groups/messages.edit.title') :: @parent
 @stop
 
 @section('style')
@@ -21,13 +21,15 @@
 @section('content')
 <div class="page-header">
 	<h3>
-		@lang('groups/messages.create.header')
+		@lang('groups/messages.edit.header')
 
-		<a href="{{ route('groups.index') }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('groups/messages.create.back')</a>
+		<div class="pull-right">
+			<a href="{{ route('groups.index') }}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('groups/messages.edit.back')</a>
+		</div>
 	</h3>
 </div>
 
-{{ Form::open(array('route' => 'groups.store', 'method' => 'POST', 'class' => '', 'id' => 'form', 'autocomplete' => 'off')) }}
+{{ Form::open(array('route' => array('groups.update', $group->id), 'method' => 'PUT', 'class' => '', 'id' => 'form', 'autocomplete' => 'off')) }}
 
 <div class="panel panel-primary">
 	<div class="panel-heading">
@@ -43,12 +45,12 @@
 				<div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 					<fieldset class="form-inline">
 						<div class="row">
-							<div class="">
-								{{ Form::label('name', Lang::get('groups/messages.create.name'), array('class' => 'control-label')) }}
+							<div class="col-md-20">
+								<label class="control-label" for="name">@lang('groups/messages.edit.name')</label>
 							</div>
 
-							<div class="col-md-32">
-								{{ Form::text('name', Input::old('name'), array('class'=>'form-control')) }}
+							<div class="col-md-52">
+								{{ Form::text('name', Input::old('name', $group->name), array('class'=>'form-control')) }}
 								<p class="help-block">{{ $errors->first('name') }}</p>
 							</div>
 						</div>
@@ -76,8 +78,8 @@
 
 						@foreach ($permissions as $permission)
 							<div class="row">
-								<div class="">
-									{{ Form::label($permission['label'], $permission['label'], array('class' => 'control-label')) }}
+								<div class="col-md-40">
+									<label class="control-label">{{ $permission['label'] }}</label>
 								</div>
 
 								<div class="col-md-32">
@@ -113,7 +115,7 @@
 <!-- Form Actions -->
 <div class="form-group">
 	<button type="reset" class="btn btn-default">Reset</button>
-	<button type="submit" class="btn btn-primary">Create Group</button>
+	<button type="submit" class="btn btn-primary">Edit Group</button>
 </div>
 
 {{ Form::close() }}
