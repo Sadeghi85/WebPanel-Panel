@@ -143,7 +143,7 @@
 					<fieldset class="">
 						<div class="row">
 							<div class="">
-								{{ Form::label('group', Lang::get('users/messages.edit.group').' *', array('class' => 'control-label')) }}
+								{{ Form::label('group', Lang::get('users/messages.edit.group'), array('class' => 'control-label')) }}
 							</div>
 
 							<div class="col-md-32">

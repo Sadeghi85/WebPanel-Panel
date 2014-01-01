@@ -189,6 +189,15 @@ class GroupsController extends RootController {
 			// Was the group updated?
 			if ($group->save())
 			{
+				// Log all this group's users out
+				$users = Sentry::findAllUsersInGroup($group);
+				
+				foreach ($users as $user)
+				{
+					$user->persist_code = null;
+					$user->save();
+				}
+			
 				// Redirect to the group page
 				return Redirect::route('groups.index')->with('success', Lang::get('groups/messages.success.update'));
 			}

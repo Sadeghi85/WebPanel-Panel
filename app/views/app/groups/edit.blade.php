@@ -45,11 +45,11 @@
 				<div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 					<fieldset class="form-inline">
 						<div class="row">
-							<div class="col-md-20">
+							<div class="">
 								<label class="control-label" for="name">@lang('groups/messages.edit.name')</label>
 							</div>
 
-							<div class="col-md-52">
+							<div class="col-md-32">
 								{{ Form::text('name', Input::old('name', $group->name), array('class'=>'form-control')) }}
 								<p class="help-block">{{ $errors->first('name') }}</p>
 							</div>
@@ -78,7 +78,7 @@
 
 						@foreach ($permissions as $permission)
 							<div class="row">
-								<div class="col-md-40">
+								<div class="">
 									<label class="control-label">{{ $permission['label'] }}</label>
 								</div>
 

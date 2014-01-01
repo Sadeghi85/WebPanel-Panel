@@ -275,6 +275,9 @@ class UsersController extends RootController {
 				}
 			}
 			
+			// Log the user out
+			$user->persist_code = null;
+			
 			// Was the user updated?
 			if ($user->save())
 			{
