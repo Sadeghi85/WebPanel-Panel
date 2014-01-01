@@ -6,8 +6,6 @@
 	<title>Error 403 - Forbidden</title>
 	<meta name="viewport" content="width=device-width">
 	<style type="text/css">
-		@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
-
 		article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
 		audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
 		audio:not([controls]) { display: none; }
@@ -63,7 +61,7 @@
 
 		body
 		{
-			font-family:'Droid Sans', sans-serif;
+			font-family:'Trebuchet MS', sans-serif;
 			font-size:10pt;
 			color:#555;
 			line-height: 25px;
@@ -109,11 +107,11 @@
 			<h3>What does this mean?</h3>
 
 			<p>
-				You don't have the necessary permissions to access to this page.
+				You don't have the necessary permissions to access this page.
 			</p>
 
 			<p>
-				Perhaps you would like to go to our <a href="{{ URL::route('home'); }}">home page</a>?
+				Perhaps you would like to go to our <a href="{{ URL::to(''); }}">home page</a>?
 			</p>
 		</div>
 	</div>

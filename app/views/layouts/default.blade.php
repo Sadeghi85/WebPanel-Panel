@@ -65,7 +65,6 @@
 @show
 
 @section('container')
-
 <div class="my-fluid-container">
 	<div class="row">
 		<div class="col-md-72">
@@ -75,14 +74,15 @@
 					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}"><strong>Overview</strong></a></li>
 					<li><a href="#"><strong>Domains</strong></a></li>
 					
-					<li class="{{ Request::is('*users*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}"><strong>Users</strong></a></li>
-					<li class="{{ Request::is('*groups*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}"><strong>Groups</strong></a></li>
-					<li class="nav-right"><a href="#"><strong>Logs</strong></a></li>
+					@if (Sentry::check() and Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+						<li class="{{ Request::is('*users*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}"><strong>Users</strong></a></li>
+						<li class="{{ Request::is('*groups*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}"><strong>Groups</strong></a></li>
+						<li class="nav-right"><a href="#"><strong>Logs</strong></a></li>
+					@endif
 				</ul>
 				
 				<div class="row">
 					<div class="col-md-72">
-					
 						<!-- Notifications -->
 						@include('app/notifications')
 
@@ -111,6 +111,18 @@
 				$(".alert-success").alert('close');
 			}, 5000);
 			
+		});
+		
+		$( document ).ready(function() {
+			
+			$(document).on('click', 'button.btn-danger', function ( event ) {
+
+				if( ! window.confirm("Are you sure?"))
+				{
+					event.preventDefault();
+				}
+
+			});
 		});
 	</script>
 @show

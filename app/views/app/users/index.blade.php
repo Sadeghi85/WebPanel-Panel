@@ -14,17 +14,7 @@
 @section('javascript')
 @parent
 	<script type="text/javascript">
-		$( document ).ready(function() {
-			
-			$(document).on('click', '.btn-danger', function ( event ) {
 
-				if( ! window.confirm("Are you sure?"))
-				{
-					event.preventDefault();
-				}
-
-			});
-		});
 	</script>
 @stop
 
@@ -47,9 +37,9 @@
 	  	<thead>
           <tr>
             <th class="col-md-4">@lang('users/messages.index.id')</th>
-			<th class="col-md-9">@lang('users/messages.index.first_name')</th>
-			<th class="col-md-9">@lang('users/messages.index.last_name')</th>
 			<th class="col-md-12">@lang('users/messages.index.username')</th>
+			<th class="col-md-18">@lang('users/messages.index.name')</th>
+			
 			<th class="col-md-9">@lang('users/messages.index.activated')</th>
 			<th class="col-md-9">@lang('users/messages.index.created_at')</th>
 			<th class="col-md-9">@lang('users/messages.index.actions')</th>
@@ -60,9 +50,9 @@
 		@foreach ($users as $user)
 		<tr>
 			<td>{{ $user->id }}</td>
-			<td>{{ $user->first_name }}</td>
-			<td>{{ $user->last_name }}</td>
 			<td>{{ $user->username }}</td>
+			<td>{{ $user->first_name.' '.$user->last_name }}</td>
+			
 			<td>@lang('general.' . ($user->isActivated() ? 'yes' : 'no'))</td>
 			<td>{{ $user->created_at->diffForHumans() }}</td>
 			<td>

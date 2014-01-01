@@ -6,8 +6,6 @@
 	<title>Error 500 - Internal Server Error</title>
 	<meta name="viewport" content="width=device-width">
 	<style type="text/css">
-		@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
-
 		article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
 		audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
 		audio:not([controls]) { display: none; }
@@ -63,7 +61,7 @@
 
 		body
 		{
-			font-family:'Droid Sans', sans-serif;
+			font-family:'Trebuchet MS', sans-serif;
 			font-size:10pt;
 			color:#555;
 			line-height: 25px;
@@ -111,13 +109,13 @@
 			<h3>What does this mean?</h3>
 
 			<p>
-				Something went wrong on our servers while we were processing your request.
+				Something went wrong on our server while we were processing your request.
 				We're really sorry about this, and will work hard to get this resolved as
 				soon as possible.
 			</p>
 
 			<p>
-				Perhaps you would like to go to our <a href="{{ URL::to('home'); }}">home page</a>?
+				Perhaps you would like to go to our <a href="{{ URL::to(''); }}">home page</a>?
 			</p>
 		</div>
 	</div>

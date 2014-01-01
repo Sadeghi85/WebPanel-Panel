@@ -23,7 +23,7 @@
 	<h3>
 		@lang('users/messages.create.header')
 
-		<a href="{{ route('users.index') }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('users/messages.create.back')</a>
+		<a href="{{ URL::previous() }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('users/messages.create.back')</a>
 	</h3>
 </div>
 
@@ -141,14 +141,15 @@
 					<fieldset class="">
 						<div class="row">
 							<div class="">
-								{{ Form::label('group', Lang::get('users/messages.create.group').' *', array('class' => 'control-label')) }}
+								{{ Form::label('group', Lang::get('users/messages.create.group'), array('class' => 'control-label')) }}
 							</div>
 
 							<div class="col-md-32">
 								<select name="group" id="group" class="form-control">
-									<option selected="selected" style="display:none;">@lang('users/messages.create.select_group')</option>
+									<option value="-1" {{ (($selectedGroup < 1) ? 'selected="selected"' : '') }} style="display:none;">@lang('users/messages.create.select_group')</option>
+									
 									@foreach ($groups as $group)
-									<option value="{{ $group->id }}"{{ (in_array($group->id, $selectedGroups) ? ' selected="selected"' : '') }}>{{ $group->name }}</option>
+										<option value="{{ $group->id }}" {{ (($selectedGroup == $group->id) ? 'selected="selected"' : '') }}>{{ $group->name }}</option>
 									@endforeach
 								</select>
 								<p class="help-block">{{ $errors->first('group') }}</p>
@@ -161,8 +162,6 @@
 			</div>
 			
 		</div>
-		
-		
 		
 	</div>
 </div>

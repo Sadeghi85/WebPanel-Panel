@@ -74,12 +74,12 @@ class GroupsController extends RootController {
 			// Was the group created?
 			if (Sentry::getGroupProvider()->create($inputs))
 			{
-				// Redirect to the new group page
+				// Redirect to the group management page
 				return Redirect::route('groups.index')->with('success', Lang::get('groups/messages.success.create'));
 			}
 
 			// Redirect to the new group page
-			return Redirect::route('groups.create')->with('error', Lang::get('groups/messages.error.create'));
+			return Redirect::back()->with('error', Lang::get('groups/messages.error.create'));
 		}
 		catch (NameRequiredException $e)
 		{
@@ -129,8 +129,11 @@ class GroupsController extends RootController {
 		}
 		catch (GroupNotFoundException $e)
 		{
+			// Prepare the error message
+			$error = Lang::get('groups/messages.error.group_not_found', compact('id'));
+			
 			// Redirect to the groups management page
-			return Redirect::route('groups.index')->with('error', Lang::get('groups/messages.error.group_not_found', compact('id')));
+			return Redirect::route('groups.index')->with('error', $error);
 		}
 
 		// Show the page
@@ -225,8 +228,11 @@ class GroupsController extends RootController {
 		}
 		catch (GroupNotFoundException $e)
 		{
+			// Prepare the error message
+			$error = Lang::get('groups/messages.error.group_not_found', compact('id'));
+			
 			// Redirect to the group management page
-			return Redirect::back()->with('error', Lang::get('groups/messages.error.group_not_found', compact('id')));
+			return Redirect::back()->with('error', $error);
 		}
 	}
 

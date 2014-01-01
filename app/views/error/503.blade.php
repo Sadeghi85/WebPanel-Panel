@@ -6,8 +6,6 @@
 	<title>Scheduled Maintenance</title>
 	<meta name="viewport" content="width=device-width">
 	<style type="text/css">
-		@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
-
 		article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
 		audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
 		audio:not([controls]) { display: none; }
@@ -63,7 +61,7 @@
 
 		body
 		{
-			font-family:'Droid Sans', sans-serif;
+			font-family:'Trebuchet MS', sans-serif;
 			font-size:10pt;
 			color:#555;
 			line-height: 25px;

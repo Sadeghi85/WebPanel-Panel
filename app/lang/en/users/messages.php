@@ -8,8 +8,10 @@ return array(
 		'delete' => 'User couldn\'t be deleted.',
 		
 		'user_exists'        => 'User already exists!',
-		'user_not_found'     => 'User [:id] does not exist.',
-		'user_name_required' => 'The name field is required',
+		'user_not_found'           => 'User [:id] doesn\'t exist.',
+		'user_login_required'      => 'The login field is required',
+		'user_password_required'   => 'The password field is required.',
+		
 	),
 	
 	'success' => array(
@@ -27,8 +29,7 @@ return array(
 		'create' => 'Create',
 		
 		'id' => 'Id',
-		'first_name' => 'First Name',
-		'last_name' => 'Last Name',
+		'name' => 'Name',
 		'username' => 'Username',
 		'activated' => 'Activated',
 		'created_at' => 'Created at',
@@ -59,7 +60,14 @@ return array(
 		
 		'back' => 'Back',
 		
-		'name' => 'Name',
+		'username' => 'Username',
+		'password' => 'Password',
+		'password_confirm' => 'Confirm Password',
+		'first_name' => 'First Name',
+		'last_name' => 'Last Name',
+		'activated' => 'User Activated',
+		'group' => 'Group',
+		'select_group' => 'Select a Group',
 		
 	),
 );

@@ -11,6 +11,9 @@ class RootController extends AuthorizedController {
 	{
 		// Apply the admin auth filter
 		$this->beforeFilter('auth.sentry.root');
+		
+		// Call parent
+		parent::__construct();
 	}
 
 	/**

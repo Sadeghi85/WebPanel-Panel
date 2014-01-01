@@ -14,17 +14,7 @@
 @section('javascript')
 @parent
 	<script type="text/javascript">
-		$( document ).ready(function() {
-			
-			$(document).on('click', '.btn-danger', function ( event ) {
-
-				if( ! window.confirm("Are you sure?"))
-				{
-					event.preventDefault();
-				}
-
-			});
-		});
+		
 	</script>
 @stop
 
