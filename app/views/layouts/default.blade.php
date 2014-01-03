@@ -104,26 +104,7 @@
     <script src="{{ asset('/assets/js/bootstrap-typeahead.min.js') }}"></script>
 
 	<script type="text/javascript">
-		$( document ).ready(function() {
-			
-			window.setTimeout(function() {
-				//$('.close').click();
-				$(".alert-success").alert('close');
-			}, 5000);
-			
-		});
 		
-		$( document ).ready(function() {
-			
-			$(document).on('click', 'button.btn-danger', function ( event ) {
-
-				if( ! window.confirm("Are you sure?"))
-				{
-					event.preventDefault();
-				}
-
-			});
-		});
 	</script>
 @show
 

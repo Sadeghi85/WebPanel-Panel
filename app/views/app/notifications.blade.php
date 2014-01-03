@@ -39,3 +39,16 @@
 	{{ $message }}
 </div>
 @endif
+
+@section('javascript')
+@parent
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			
+			window.setTimeout(function() {
+				$(".alert-success").alert('close');
+			}, 5000);
+			
+		});
+	</script>
+@stop

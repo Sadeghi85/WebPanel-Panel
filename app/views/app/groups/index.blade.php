@@ -45,26 +45,26 @@
       </thead>
 	<tbody>
 		@if ($groups->count() >= 1)
-		@foreach ($groups as $group)
-		<tr>
-			<td>{{ $group->id }}</td>
-			<td>{{ $group->name }}</td>
-			<td>{{ $group->users()->count() }}</td>
-			<td>{{ $group->created_at->diffForHumans() }}</td>
-			<td>
-				{{ Form::open(array('route' => array('groups.destroy', $group->id), 'method' => 'DELETE')) }}
-					
-					@if ($group->name !== 'Root')
-						<a href="{{ route('groups.edit', $group->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
-						<button type="submit" class="btn btn-xs btn-danger">@lang('button.delete')</button>
-					@else
-						<span class="btn btn-xs btn-default disabled">@lang('button.edit')</span>
-						<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
-					@endif
-				{{ Form::close() }}
-			</td>
-		</tr>
-		@endforeach
+			@foreach ($groups as $group)
+				<tr>
+					<td>{{ $group->id }}</td>
+					<td>{{ $group->name }}</td>
+					<td>{{ $group->users()->count() }}</td>
+					<td>{{ $group->created_at->diffForHumans() }}</td>
+					<td>
+						{{ Form::open(array('route' => array('groups.destroy', $group->id), 'method' => 'DELETE', 'id' => 'delete'.$group->id, 'name' => 'Group: '.$group->name)) }}
+							
+							@if ($group->name !== 'Root')
+								<a href="{{ route('groups.edit', $group->id) }}" class="btn btn-xs btn-default">@lang('button.edit')</a>
+								<button type="button" class="btn btn-xs btn-danger">@lang('button.delete')</button>
+							@else
+								<span class="btn btn-xs btn-default disabled">@lang('button.edit')</span>
+								<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
+							@endif
+						{{ Form::close() }}
+					</td>
+				</tr>
+			@endforeach
 		@else
 		<tr>
 			<td colspan="5">No results</td>
@@ -74,4 +74,8 @@
 </table>
 </div>
 {{ $groups->links() }}
+
+<!-- Delete Warning Modal -->
+@include('partials/delete_warning_modal')
+
 @stop
