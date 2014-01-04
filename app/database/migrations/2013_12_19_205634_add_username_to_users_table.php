@@ -13,12 +13,12 @@ class AddUsernameToUsersTable extends Migration {
 	{
 		Schema::table('users', function($table)
         {
-            $table->string('username')->after('email');
-
-            $table->dropUnique('users_email_unique');
+			$table->string('username')->after('email');
+			$table->dropUnique('users_email_unique');
+			$table->unique('username');
+			
             DB::statement('ALTER TABLE `users` MODIFY `email` VARCHAR(255) DEFAULT NULL;');
 
-            $table->unique('username');
         });
 	}
 
@@ -29,14 +29,14 @@ class AddUsernameToUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		 Schema::table('users', function($table)
+		Schema::table('users', function($table)
         {
-            $table->dropUnique('users_username_unique');
-
+			//$table->dropUnique('users_username_unique');
+			//$table->dropColumn('username');
+			//$table->unique('email');
+            
             DB::statement('ALTER TABLE `users` MODIFY `email` VARCHAR(255) NOT NULL;');
-            $table->unique('email');
-
-            $table->dropColumn('username');
+ 
         });
 	}
 

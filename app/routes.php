@@ -29,6 +29,9 @@ Route::group(array('before' => 'auth.sentry'), function()
     // Overview
 	Route::resource('overview', 'OverviewController', array('only' => array('index')));
 	
+	// Domain
+	Route::resource('domains', 'DomainsController', array('except' => array('show')));
+	
 	// Profile
 	Route::resource('profile', 'ProfileController', array('only' => array('index')));
 	

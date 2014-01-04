@@ -18,7 +18,9 @@
     <link href="{{ asset('/assets/css/bootstrap.css') }}" rel="stylesheet" media="screen">
     <link href="{{ asset('/assets/css/bootstrap-theme.css') }}" rel="stylesheet" media="screen">
 
+	<link href="{{ asset('/assets/css/multi-select.css') }}" rel="stylesheet" media="screen">
     <link href="{{ asset('/assets/css/bootstrap-extra.css') }}" rel="stylesheet" media="screen">
+	
 
  
 @section('style') 
@@ -72,7 +74,7 @@
 			
 				<ul class="nav nav-tabs">
 					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}"><strong>Overview</strong></a></li>
-					<li><a href="#"><strong>Domains</strong></a></li>
+					<li class="{{ Request::is('*domains*') ? 'active' : '' }}"><a href="{{ URL::Route('domains.index') }}"><strong>Domains</strong></a></li>
 					
 					@if (Sentry::check() and Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
 						<li class="{{ Request::is('*users*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}"><strong>Users</strong></a></li>
@@ -102,8 +104,16 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('/assets/js/bootstrap-typeahead.min.js') }}"></script>
+	<script src="{{ asset('/assets/js/jquery.multi-select.js') }}"></script>
 
 	<script type="text/javascript">
+		$( document ).ready(function() {
+		
+			$('select[multiple]').multiSelect({
+				selectableHeader: '<span class="label label-primary select-multiple-header">Selectable items</span>',
+				selectionHeader: '<span class="label label-primary select-multiple-header">Selected items</span>',
+			});
+		});
 		
 	</script>
 @show

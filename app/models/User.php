@@ -5,11 +5,31 @@ use Cartalyst\Sentry\Users\Eloquent\User as SentryUserModel;
 class User extends SentryUserModel {
 
 	/**
-	 * Indicates if the model should soft delete.
+	 * The database table used by the model.
 	 *
-	 * @var bool
+	 * @var string
 	 */
-	// protected $softDelete = true;
+	protected $table = 'users';
+	
+	/**
+	 * The attributes excluded from the model's JSON form.
+	 *
+	 * @var array
+	 */
+	protected $hidden = array('password');
+	
+	/**
+	 * Many to many relationship.
+	 *
+	 * @return Model
+	 */
+	public function domains()
+    {
+		// Second argument is the name of pivot table.
+		// Third & forth arguments are the names of foreign keys.
+        return $this->belongsToMany('Domain', 'domain_user', 'user_id', 'domain_id')->withTimestamps();
+        
+    }
 
 	/**
 	 * Returns the user full name, it simply concatenates

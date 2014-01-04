@@ -51,7 +51,7 @@
 		<tr>
 			<td>{{ $user->id }}</td>
 			<td>{{ $user->username }}</td>
-			<td>{{ $user->first_name.' '.$user->last_name }}</td>
+			<td>{{ $user->fullName() }}</td>
 			
 			<td>@lang('general.' . ($user->isActivated() ? 'yes' : 'no'))</td>
 			<td>{{ $user->created_at->diffForHumans() }}</td>

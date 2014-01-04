@@ -58,9 +58,15 @@ class UsersController extends RootController {
 
 		// Selected group
 		$selectedGroup = Input::old('group', '-1');
+		
+		$indexPage = '';
+		if (preg_match('#page=(\d+)#', URL::previous(), $matches))
+		{
+			$indexPage = $matches[1];
+		}
 
 		// Show the page
-		return View::make('app.users.create', compact('groups', 'selectedGroup'));
+		return View::make('app.users.create', compact('groups', 'selectedGroup', 'indexPage'));
 	}
 
 	/**
@@ -95,7 +101,7 @@ class UsersController extends RootController {
 		try
 		{
 			// Get the inputs, with some exceptions
-			$inputs = Input::except('csrf_token', 'password_confirm', 'group');
+			$inputs = Input::except('csrf_token', 'password_confirm', 'group', 'indexPage');
 
 			// Was the user created?
 			if ($user = Sentry::getUserProvider()->create($inputs))
@@ -107,7 +113,7 @@ class UsersController extends RootController {
 				$success = Lang::get('users/messages.success.create');
 
 				// Redirect to the users management page
-				return Redirect::route('users.index')->with('success', $success);
+				return Redirect::route('users.index', array('page' => input::get('indexPage', 1)))->with('success', $success);
 			}
 
 			// Prepare the error message
@@ -309,7 +315,38 @@ class UsersController extends RootController {
 	 */
 	public function destroy($id)
 	{
-		//
+		try
+		{
+			// Get user information
+			$user = Sentry::getUserProvider()->findById($id);
+
+			// Check if we are not trying to delete ourselves
+			if ($user->id === Sentry::getId())
+			{
+				// Prepare the error message
+				$error = Lang::get('users/messages.error.delete');
+
+				// Redirect to the user management page
+				return Redirect::back()->with('error', $error);
+			}
+
+			// Delete the user
+			$user->delete();
+
+			// Prepare the success message
+			$success = Lang::get('users/messages.success.delete');
+
+			// Redirect to the user management page
+			return Redirect::back()->with('success', $success);
+		}
+		catch (UserNotFoundException $e)
+		{
+			// Prepare the error message
+			$error = Lang::get('users/messages.user_not_found', compact('id' ));
+
+			// Redirect to the user management page
+			return Redirect::back()->with('error', $error);
+		}
 	}
 
 }

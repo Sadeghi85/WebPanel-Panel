@@ -29,8 +29,6 @@
 
 {{ Form::open(array('route' => array('users.update', $user->id), 'method' => 'PUT', 'class' => '', 'id' => 'form', 'autocomplete' => 'off')) }}
 
-	{{ Form::hidden('indexPage', Input::old('indexPage', (isset($indexPage) ? $indexPage : 1)), array('class'=>'form-control')) }}
-	
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		<h3 class="panel-title">General</h3>
@@ -38,6 +36,8 @@
 	<div class="panel-body">
 		
 		<p>&nbsp;</p>
+		
+		{{ Form::hidden('indexPage', Input::old('indexPage', (isset($indexPage) ? $indexPage : 1)), array('class'=>'form-control')) }}
 		
 		<div class="row">
 			<div class="col-md-36">

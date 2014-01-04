@@ -29,6 +29,8 @@
 
 {{ Form::open(array('route' => 'users.store', 'method' => 'POST', 'class' => '', 'id' => 'form', 'autocomplete' => 'off')) }}
 
+	{{ Form::hidden('indexPage', Input::old('indexPage', (isset($indexPage) ? $indexPage : 1)), array('class'=>'form-control')) }}
+	
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		<h3 class="panel-title">General</h3>
