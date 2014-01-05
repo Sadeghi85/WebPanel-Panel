@@ -11,7 +11,58 @@ class DomainsController extends AuthorizedController {
 	{
 		// Call parent
 		parent::__construct();
+		
+		Validator::extend('custom.domain', function($attribute, $value, $parameters)
+		{
+			$inputs = explode("\r\n", $value);
+			
+			foreach ($inputs as $input)
+			{
+				if ( ! preg_match('#^([a-z0-9][-a-z0-9]*\.)+[a-z]{2,5}$#i', $input))
+				{
+					return false;
+				}
+			}
+			
+			
+			return true;
+		});
+		
+		Validator::extend('custom.exists_array', function($attribute, $value, $parameters)
+		{
+			if (count($parameters) != 2) { return false; }
+			
+			if ( ! is_array($value))
+			{
+				$inputs = array($value);
+			}
+			else
+			{
+				$inputs = $value;
+			}
+			
+			foreach ($inputs as $input)
+			{
+				$validator = Validator::make(array($attribute => $input), array($attribute => sprintf('exists:%s,%s', $parameters[0], $parameters[1])));
+
+				if ($validator->fails()) { return false; }
+			}
+			
+			return true;
+		});
 	}
+	
+	/**
+	 * Declare the rules for the form validation
+	 *
+	 * @var array
+	 */
+	protected $validationRules = array(
+		//'name'       => 'required|custom.domain|unique:domains,name',
+		'name'       => 'required|custom.domain',
+		'alias'       => 'domain',
+		//'users'       => 'custom.exists_array:users,id',
+	);
 	
 	/**
 	 * Display a listing of the resource.
@@ -41,6 +92,11 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function create()
 	{
+		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.create')))
+		{
+			App::abort(403);
+		}
+		
 		$users = $selectedUsers = '';
 		
 		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
@@ -69,7 +125,58 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function store()
 	{
-		//
+		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		{
+			$this->validationRules['users'] = 'custom.exists_array:users,id';
+		}
+	
+		// Create a new validator instance from our validation rules
+		$validator = Validator::make(Input::all(), $this->validationRules);
+
+		// If validation fails, we'll exit the operation now.
+		if ($validator->fails())
+		{
+			// Ooops.. something went wrong
+			return Redirect::back()->withInput()->withErrors($validator);
+		}
+		
+		$status = \Libraries\Sadeghi85\Domains::create(strtolower(Input::get('name')));
+		
+		if ($status['status'] !== 0)
+		{
+			// Redirect to the user creation page
+			return Redirect::back()->withInput()->with('error', $status['message']);
+		}
+		
+		$domain = new Domain;
+		
+		$domain->name = strtolower(Input::get('name'));
+		$alias = Input::get('alias') ? Input::get('alias') : sprintf('www.%s', $domain->name);
+		$domain->alias = $domain->formatAlias($alias);
+		$domain->activated = Input::get('activated', 0);
+		
+		$domain->save();
+		
+		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		{
+			$users = Input::get('users', array());
+			
+			foreach ($users as $userId)
+			{
+				$domain->users()->attach($userId);
+			}
+		}
+		else
+		{
+			$domain->users()->attach(Sentry::getUser()->id);
+		}
+		
+		// Prepare the success message
+		$success = Lang::get('domains/messages.success.create');
+
+		// Redirect to the user page
+		return Redirect::route('domains.index', array('page' => input::get('indexPage', 1)))->with('success', $success);
+		
 	}
 
 	/**
@@ -80,7 +187,12 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function edit($id)
 	{
-		//
+		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.edit')))
+		{
+			App::abort(403);
+		}
+		
+		
 	}
 
 	/**
@@ -102,7 +214,11 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function destroy($id)
 	{
-		//
+		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.delete')))
+		{
+			App::abort(403);
+		}
+		
 	}
 
 }

@@ -24,8 +24,13 @@
 		@lang('domains/messages.index.header')
 
 		<div class="pull-right">
-			<a href="{{ route('domains.create') }}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus-sign"></i> @lang('domains/messages.index.create')</a>
+			@if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.create'))
+				<a href="{{ route('domains.create') }}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus-sign"></i> @lang('domains/messages.index.create')</a>
+			@else
+				<span class="btn btn-sm btn-primary disabled"><i class="glyphicon glyphicon-plus-sign"></i> @lang('domains/messages.index.create')</span>
+			@endif
 		</div>
+		
 	</h3>
 </div>
 

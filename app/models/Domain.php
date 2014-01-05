@@ -34,20 +34,31 @@ class Domain extends Eloquent {
 		}
 	}
 	
-	public function formatAlias()
+	public function formatAlias($input = null)
 	{
-		$aliases = json_decode($this->alias);
-		
-		$formattedAlias = '';
-		
-		foreach ($aliases as $alias)
+		if ($input)
 		{
-			$formattedAlias .= $alias.', ';
+			$aliases = explode("\r\n", $input);
+			
+			$aliases = array_map('strtolower', $aliases);
+
+			return json_encode($aliases, JSON_FORCE_OBJECT);
 		}
-		
-		$formattedAlias = trim(trim($formattedAlias), ',');
-		
-		return $formattedAlias;
+		else
+		{
+			$aliases = json_decode($this->alias);
+			
+			$formattedAlias = '';
+			
+			foreach ($aliases as $alias)
+			{
+				$formattedAlias .= $alias.', ';
+			}
+			
+			$formattedAlias = trim(trim($formattedAlias), ',');
+			
+			return $formattedAlias;
+		}
 	}
 	
 }

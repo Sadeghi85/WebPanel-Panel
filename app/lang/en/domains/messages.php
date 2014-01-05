@@ -41,7 +41,7 @@ return array(
 		
 		'back' => 'Back',
 		
-		'name' => 'Name',
+		'name' => 'ServerName',
 		'alias' => 'Alias',
 		'activated' => 'Activated',
 		'users' => 'Users',
