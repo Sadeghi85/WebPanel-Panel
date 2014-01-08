@@ -140,20 +140,26 @@ class DomainsController extends AuthorizedController {
 			return Redirect::back()->withInput()->withErrors($validator);
 		}
 		
-		$status = \Libraries\Sadeghi85\Domains::create(strtolower(Input::get('name')));
+		// Create domain
+		$status = \Libraries\Sadeghi85\Domains::create(strtolower(Input::get('name')), Input::get('ipPort'), (int) Input::get('activated', 0));
 		
 		if ($status['status'] !== 0)
 		{
+			$error = sprintf('Code %s: %s', $status['line'], $status['message']);
+			
+			$error .= ($status['output'] ? sprintf(' <br><br><pre><code>%s</code></pre>', $status['output']) : '');
+			
 			// Redirect to the user creation page
-			return Redirect::back()->withInput()->with('error', $status['message']);
+			return Redirect::back()->withInput()->with('error', $error);
 		}
 		
+		// Register domain in database
 		$domain = new Domain;
 		
 		$domain->name = strtolower(Input::get('name'));
 		$alias = Input::get('alias') ? Input::get('alias') : sprintf('www.%s', $domain->name);
 		$domain->alias = $domain->formatAlias($alias);
-		$domain->activated = Input::get('activated', 0);
+		$domain->activated = (int) Input::get('activated', 0);
 		
 		$domain->save();
 		

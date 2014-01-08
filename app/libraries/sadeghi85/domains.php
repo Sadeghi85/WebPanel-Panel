@@ -26,209 +26,230 @@ class Domains {
     	self::$initialized = true;
     }
 	
-	public static function create($domain)
+	public static function formatOutput($output)
+	{
+		return trim(preg_replace(sprintf('#^\s*(?:%s)?\s*(.*?)(?:%s)?\s*$#is', preg_quote(self::$utilitiesBeginSignature), preg_quote(self::$utilitiesEndSignature)), '$1', implode("\n", $output)));
+	}
+	
+	public static function create($domain, $ipPort = '127.0.0.1:80', $activate = 0)
 	{
 		self::initialize();
 		
 		$domain = escapeshellcmd(strtolower($domain));
 		
-		// Check if domain directory already exists
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s"', self::$utilitiesPath, 'file_exists.sh', self::$basePath, $domain), $output, $returnVal))
+////////// Step 1: Check if domain directory already exists
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s" 2>&1', self::$utilitiesPath, 'file_exists.sh', self::$basePath, $domain), $output, $returnVal))
 		{
-			if ( ! preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "file_exists.sh" utility.');
-			}
-		}
-		
-		if ($returnVal === 0)
-		{
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Domain directory already exists. Move it and try again.');
-		}
-		
-		unset($output);
-		//
-		
-		// Create the domain directory
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s"', self::$utilitiesPath, 'mkdir.sh', self::$basePath, $domain), $output, $returnVal))
-		{
+			// Domain directory doesn't. Will create in the next step.
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t create the Domain directory.');
+				
 			}
-		
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "mkdir.sh" utility.');
-		}
-		
-		unset($output);
-		//
-		
-		// Create the web directory
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s/%s"', self::$utilitiesPath, 'mkdir.sh', self::$basePath, $domain, self::$webDir), $output, $returnVal))
-		{
-			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
+			// Problem. "file_exists.sh" didn't execute to the last line.
+			else
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t create the web directory.');
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "file_exists.sh" utility.', 'output' => self::formatOutput($output));
 			}
-			
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "mkdir.sh" utility.');
+		}
+		// Domain directory exists.
+		else
+		{
+			return array('status' => 1, 'line' => __LINE__, 'message' => 'Domain directory already exists. Move it and try again.', 'output' => self::formatOutput($output));
 		}
 		
 		unset($output);
-		//
+////////// \Step 1
 		
 		// PHP user
 		$phpUser = 'u-'.substr(str_replace('.', '_', $domain), 0, 30);
 		
-		// Check if PHP user already exists
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s"', self::$utilitiesPath, 'user_exists.sh', $phpUser), $output, $returnVal))
+////////// Step 2: Create the PHP user
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'useradd.sh', self::$basePath, $domain, self::$userShell, $phpUser), $output, $returnVal))
 		{
-			// PHP user for this domain doesn't exists
+			// Can't create PHP user. Why?
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				unset($output);
-				
-				// Create the PHP user
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s/%s" "%s"', self::$utilitiesPath, 'useradd.sh', $phpUser, self::$basePath, $domain, self::$userShell), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t create the PHP user for this domain.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "useradd.sh" utility.');
-				}
-				
-				unset($output);
-				//
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the PHP user for this domain.', 'output' => self::formatOutput($output));
 			}
+			// Problem. "useradd.sh" didn't execute to the last line.
 			else
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "user_exists.sh" utility.');
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "useradd.sh" utility.', 'output' => self::formatOutput($output));
 			}
+		}
+		// PHP user is created successfully.
+		else
+		{
+		
 		}
 		
 		unset($output);
-		//
-		
-		// Correcting permissions on the domain directory
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" "%s/%s"', self::$utilitiesPath, 'chown.sh', '-R', $phpUser, self::$basePath, $domain), $output, $returnVal))
+////////// \Step 2
+
+/////////// Step 3: Create the domain, web directory and index.php
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'mkweb.sh', self::$basePath, $domain, self::$webDir, $domain, $phpUser), $output, $returnVal))
 		{
+			// Can't create directory. Why?
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t change permissions on the domain directory.');
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the web directory.', 'output' => self::formatOutput($output));
 			}
-			
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "chown.sh" utility.');
+			// Problem. "mkweb.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "mkweb.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Domain and web directory is created successfully.
+		else
+		{
+		
 		}
 		
 		unset($output);
+////////// \Step 3
 		
-		// 644 for files (initially 644 for all, then 755 for dirs)
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s/%s"', self::$utilitiesPath, 'chmod.sh', '-R 644', self::$basePath, $domain), $output, $returnVal))
+////////// Step 4: Correcting permissions on the domain directory
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s/%s" 2>&1', self::$utilitiesPath, 'chpermission.sh', $phpUser, self::$basePath, $domain), $output, $returnVal))
 		{
+			// Can't change permissions. Why?
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t change permissions on the domain directory.');
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t change permissions on the domain directory.', 'output' => self::formatOutput($output));
 			}
-			
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "chmod.sh" utility.');
+			// Problem. "chpermission.sh" didn't execute to the last line.
+			else
+			{			
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "chpermission.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Permissions changed successfully.
+		else
+		{
+		
 		}
 		
 		unset($output);
+////////// \Step 4
 		
-		// to give search bit to all directories, effectively 755 for dirs
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s/%s"', self::$utilitiesPath, 'chmod.sh', '-R +X', self::$basePath, $domain), $output, $returnVal))
+/////////// Step 5: Creating PHP pool definition
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'mkphppool.sh', $domain, $phpUser), $output, $returnVal))
 		{
+			// Can't create pool. Why?
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t change permissions on the domain directory.');
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the PHP pool.', 'output' => self::formatOutput($output));
 			}
-			
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "chmod.sh" utility.');
+			// Problem. "mkphppool.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "mkphppool.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Pool created successfully.
+		else
+		{
+		
 		}
 		
 		unset($output);
-		//
+////////// \Step 5
 		
-		// Creating pool definition
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "/etc/php-fpm.d/sites-available/%s.conf"', self::$utilitiesPath, 'file_exists.sh', $domain), $output, $returnVal))
+		
+/////////// Step 6: Creating Apache virtualhost definition
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" 2>&1', self::$utilitiesPath, 'mkapachevhost.sh', $domain), $output, $returnVal))
 		{
-			// Pool definition doesn't exists
+			// Can't create virtualhost. Why?
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
-				unset($output);
-				
-				// Copy pool definition from template
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "templates/php-fpm/example.com.conf" "/etc/php-fpm.d/sites-available/%s.conf"', self::$utilitiesPath, 'cp.sh', $domain), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t copy the pool definition from template.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "cp.sh" utility.');
-				}
-				
-				unset($output);
-				
-				// Regex replace
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "s/example\\\.com/%s/g" "/etc/php-fpm.d/sites-available/%s.conf"', self::$utilitiesPath, 'regex_replace.sh', $domain, $domain), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t edit the pool definition.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "regex_replace.sh" utility.');
-				}
-				
-				unset($output);
-				
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "s/^user\\\s\\\+=.*/user = %s/" "/etc/php-fpm.d/sites-available/%s.conf"', self::$utilitiesPath, 'regex_replace.sh', $phpUser, $domain), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t edit the pool definition.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "regex_replace.sh" utility.');
-				}
-				
-				unset($output);
-				
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "s/^group\\\s\\\+=.*/group = %s/" "/etc/php-fpm.d/sites-available/%s.conf"', self::$utilitiesPath, 'regex_replace.sh', $phpUser, $domain), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t edit the pool definition.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "regex_replace.sh" utility.');
-				}
-				
-				unset($output);
-				
-				if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "../sites-available/%s.conf" "/etc/php-fpm.d/sites-enabled/%s.conf"', self::$utilitiesPath, 'ln.sh', $domain, $domain), $output, $returnVal))
-				{
-					if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-					{
-						return array('status' => '1', 'message' => 'Line '.__LINE__.': Couldn\'t enable the pool.');
-					}
-					
-					return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "ln.sh" utility.');
-				}
-				
-				unset($output);
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the Apache virtualhost.', 'output' => self::formatOutput($output));
 			}
-			
-			return array('status' => '1', 'message' => 'Line '.__LINE__.': Critical error in executing "file_exists.sh" utility.');
+			// Problem. "mkapachevhost.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "mkapachevhost.sh" utility.', 'output' => self::formatOutput($output));
+			}
 		}
-		//
+		// Virtualhost created successfully.
+		else
+		{
+		
+		}
+		
+		unset($output);
+////////// \Step 6
+
+/////////// Step 7: Creating Nginx virtualhost definition
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'mknginxvhost.sh', $domain, $ipPort), $output, $returnVal))
+		{
+			// Can't create virtualhost. Why?
+			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the Nginx virtualhost.', 'output' => self::formatOutput($output));
+			}
+			// Problem. "mknginxvhost.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "mknginxvhost.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Virtualhost created successfully.
+		else
+		{
+		
+		}
+		
+		unset($output);
+////////// \Step 7
+
+/////////// Step 8: Creating Webalizer definition
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" 2>&1', self::$utilitiesPath, 'mkwebalizer.sh', $domain), $output, $returnVal))
+		{
+			// Can't create webalizer config. Why?
+			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t create the Webalizer config.', 'output' => self::formatOutput($output));
+			}
+			// Problem. "mkwebalizer.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "mkwebalizer.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Webalizer config created successfully.
+		else
+		{
+		
+		}
+		
+		unset($output);
+////////// \Step 8
+		
+/////////// Step 9: Activate or deactivate?
+		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'chstatus.sh', $domain, $activate), $output, $returnVal))
+		{
+			// Can't change status. Why?
+			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t '.($activate ? 'activate' : 'diactivate').' this domain.', 'output' => self::formatOutput($output));
+			}
+			// Problem. "chstatus.sh" didn't execute to the last line.
+			else
+			{
+				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "chstatus.sh" utility.', 'output' => self::formatOutput($output));
+			}
+		}
+		// Status changed successfully.
+		else
+		{
+		
+		}
+		
+		unset($output);
+////////// \Step 9
 		
 		
-		
-		
+		return array('status' => 0, 'line' => __LINE__, 'message' => '', 'output' => '');
 	}
 
 
