@@ -19,8 +19,13 @@ Route::get('/', function()
 
 Route::group(array('before' => 'auth.sentry.root'), function()
 {
+	// Group
 	Route::resource('groups', 'GroupsController', array('except' => array('show')));
+	
+	// User
 	Route::resource('users', 'UsersController', array('except' => array('show')));
+	
+	// Log
 	Route::resource('logs', 'LogsController', array('only' => array('index', 'show', 'destroy')));
 });
 

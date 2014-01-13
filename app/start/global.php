@@ -99,3 +99,14 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+/*
+|--------------------------------------------------------------------------
+| Global Constant
+|--------------------------------------------------------------------------
+|
+*/
+
+// To check if Views are run from inside the framework
+define('VIEW_IS_ALLOWED', true);
+

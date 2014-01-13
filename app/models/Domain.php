@@ -22,6 +22,16 @@ class Domain extends Eloquent {
         
     }
 	
+	/**
+	 * One to many relationship.
+	 *
+	 * @return Model
+	 */
+	public function logs()
+    {
+        return $this->hasMany('MyLog', 'domain_id');
+    }
+	
 	public function isActivated()
 	{
 		if ($this->activated == 1)

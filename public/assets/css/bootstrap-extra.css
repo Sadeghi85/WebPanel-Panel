@@ -204,6 +204,37 @@ text-transform: uppercase;
 	background-color: #eee;
 }
 
+.table > tbody > .success > td  {
+  background-color: #dff0d8 !important;
+}
+
+.table > tbody > .danger > td  {
+  background-color: #f2dede !important;
+}
+
+.table > tbody > .warning > td  {
+  background-color: #fcf8e3 !important;
+}
+
+.table > tbody > .info > td  {
+  background-color: #d9edf7 !important;
+}
+
+.table-hover > tbody > .success:hover > td  {
+  background-color: #d0e9c6 !important;
+}
+
+.table-hover > tbody > .danger:hover > td  {
+  background-color: #ebcccc !important;
+}
+
+.table-hover > tbody > .warning:hover > td  {
+  background-color: #faf2cc !important;
+}
+
+.table-hover > tbody > .info:hover > td  {
+  background-color: #c4e3f3 !important;
+}
 
 
 .ms-container .ms-list {

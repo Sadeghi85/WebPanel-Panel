@@ -16,8 +16,8 @@ class CreateDomainUserTable extends Migration {
 		Schema::create('domain_user', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('domain_id');
-			$table->integer('user_id');
+			$table->integer('domain_id')->unsigned();
+			$table->integer('user_id')->unsigned();
 			
 			$table->timestamps();
 		});

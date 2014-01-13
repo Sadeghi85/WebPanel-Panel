@@ -9,7 +9,11 @@ class LogsController extends RootController {
 	 */
 	public function index()
 	{
-		//
+		// Grab all the logs
+		$logs = MyLog::newest()->with('domain', 'user')->paginate();
+
+		// Show the page
+		return View::make('app.logs.index', compact('logs'));
 	}
 
 	/**
@@ -40,7 +44,11 @@ class LogsController extends RootController {
 	 */
 	public function show($id)
 	{
-		//
+		// Grab all the logs
+		$log = MyLog::findOrFail($id)->with('domain', 'user')->first();
+
+		// Show the page
+		return View::make('app.logs.show', compact('log'));
 	}
 
 	/**
@@ -73,7 +81,16 @@ class LogsController extends RootController {
 	 */
 	public function destroy($id)
 	{
-		//
+		$log = MyLog::findOrFail($id);
+
+		// Delete the log
+		$log->delete();
+
+		// Prepare the success message
+		$success = Lang::get('logs/messages.success.delete');
+
+		// Redirect to the logs page
+		return Redirect::back()->with('success', $success);
 	}
 
 }

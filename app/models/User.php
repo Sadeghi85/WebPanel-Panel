@@ -28,9 +28,19 @@ class User extends SentryUserModel {
 		// Second argument is the name of pivot table.
 		// Third & forth arguments are the names of foreign keys.
         return $this->belongsToMany('Domain', 'domain_user', 'user_id', 'domain_id')->withTimestamps();
-        
     }
 
+	/**
+	 * One to many relationship.
+	 *
+	 * @return Model
+	 */
+	public function logs()
+    {
+        return $this->hasMany('MyLog', 'user_id');
+    }
+	
+	
 	/**
 	 * Returns the user full name, it simply concatenates
 	 * the user first and last name.
