@@ -76,11 +76,11 @@
 				<ul class="nav nav-tabs">
 					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}"><strong>Overview</strong></a></li>
 					<li class="{{ Request::is('*domains*') ? 'active' : '' }}"><a href="{{ URL::Route('domains.index') }}"><strong>Domains</strong></a></li>
+					<li class="{{ Request::is('*logs*') ? 'active' : '' }}"><a href="{{ URL::Route('logs.index') }}"><strong>Logs</strong></a></li>
 					
 					@if (Sentry::check() and Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
 						<li class="{{ Request::is('*users*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('users.index') }}"><strong>Users</strong></a></li>
 						<li class="{{ Request::is('*groups*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('groups.index') }}"><strong>Groups</strong></a></li>
-						<li class="{{ Request::is('*logs*') ? 'active' : '' }} nav-right"><a href="{{ URL::Route('logs.index') }}"><strong>Logs</strong></a></li>
 					@endif
 				</ul>
 				

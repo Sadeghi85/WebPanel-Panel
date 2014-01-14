@@ -47,7 +47,7 @@ class GroupsController extends RootController {
 	{
 		// Declare the rules for the form validation
 		$rules = array(
-			'name' => 'required',
+			'name' => 'required|between:3,127|alpha_dash',
 		);
 
 		// Create a new validator instance from our validation rules
@@ -167,7 +167,7 @@ class GroupsController extends RootController {
 
 		// Declare the rules for the form validation
 		$rules = array(
-			'name' => 'required',
+			'name' => 'required|between:3,127|alpha_dash',
 		);
 
 		// Create a new validator instance from our validation rules

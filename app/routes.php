@@ -24,9 +24,6 @@ Route::group(array('before' => 'auth.sentry.root'), function()
 	
 	// User
 	Route::resource('users', 'UsersController', array('except' => array('show')));
-	
-	// Log
-	Route::resource('logs', 'LogsController', array('only' => array('index', 'show', 'destroy')));
 });
 
 Route::group(array('before' => 'auth.sentry'), function()
@@ -36,6 +33,9 @@ Route::group(array('before' => 'auth.sentry'), function()
 	
 	// Domain
 	Route::resource('domains', 'DomainsController', array('except' => array('show')));
+	
+	// Log
+	Route::resource('logs', 'LogsController', array('only' => array('index', 'show', 'destroy')));
 	
 	// Profile
 	Route::resource('profile', 'ProfileController', array('only' => array('index')));

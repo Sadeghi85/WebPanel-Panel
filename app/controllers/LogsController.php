@@ -1,17 +1,60 @@
 <?php
 
-class LogsController extends RootController {
+class LogsController extends AuthorizedController {
 
+	/**
+	 * Initializer.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		// Call parent
+		parent::__construct();
+	}
+	
 	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
 	public function index()
-	{
-		// Grab all the logs
-		$logs = MyLog::newest()->with('domain', 'user')->paginate();
+	{	
+		// $item_ids = DB::table('category_item')->where('category_id', '=', $category_id)->get('item_id');
+		// $item_ids = array_map(function($arr){ return $arr->item_id; }, $item_ids);
+		// $items = Item::where_in('id', $item_ids)->paginate(10);
 
+		
+		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		{
+			// Grab all the logs
+			$logs = MyLog::newest()->with('domain', 'user')->paginate();
+		}
+		else
+		{
+			if (Sentry::getUser()->hasAccess('log.all'))
+			{
+				// Grab all the logs including Root
+				$logs = MyLog::newest()->with('domain', 'user')->paginate();
+			}
+			elseif (Sentry::getUser()->hasAccess('log.nonroot'))
+			{
+				// Grab all the logs for users that belong to groups other than Root
+				$groupIDs = Sentry::getGroupProvider()->createModel()->where('name', '<>', 'Root')->lists('id');
+				$userIDs = DB::table('users_groups')->whereIn('group_id', $groupIDs)->lists('user_id');
+				$logs = MyLog::whereIn('user_id', $userIDs)->newest()->with('domain', 'user')->paginate();
+			}
+			elseif (Sentry::getUser()->hasAccess('log.self'))
+			{
+				// Grab all the logs for this user only
+				$logs = MyLog::where('user_id', '=', Sentry::getUser()->id)->newest()->with('domain', 'user')->paginate();
+			}
+			else
+			{
+				App::abort(403);
+			}
+		}
+		
 		// Show the page
 		return View::make('app.logs.index', compact('logs'));
 	}
