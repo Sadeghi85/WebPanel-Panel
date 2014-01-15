@@ -108,6 +108,15 @@ class UsersController extends RootController {
 			{
 				// Assign the selected group to this user
 				if ($assignGroup) { $user->addGroup($group); }
+				
+				// Log
+				$fullname = trim(Sentry::getUser()->fullName());
+				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+				$newUserFullname = trim($user->fullName());
+				$newUserUsername = $user->username . ($newUserFullname ? '('.$newUserFullname.')' : '');
+				$user->load('groups');
+				$myLog = new MyLog;
+				$myLog->insertLog(sprintf('User [%s] has created the User [%s].%sCurrent Status:%s%s', $username, $newUserUsername, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)), Sentry::getUser()->id, null, 'Create User', 'info');
 
 				// Prepare the success message
 				$success = Lang::get('users/messages.success.create');
@@ -210,6 +219,8 @@ class UsersController extends RootController {
 			return Redirect::route('users.index')->with('error', $error);
 		}
 
+		$usernameToLog = $user->username;
+		
 		$this->validationRules['username'] = 'required|between:3,127|alpha_dash|unique:users,username,'.$user->id;
 
 		// Do we want to update the user password?
@@ -287,6 +298,13 @@ class UsersController extends RootController {
 			// Was the user updated?
 			if ($user->save())
 			{
+				// Log
+				$fullname = trim(Sentry::getUser()->fullName());
+				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+				$user->load('groups');
+				$myLog = new MyLog;
+				$myLog->insertLog(sprintf('User [%s] has edited the User [%s].%sCurrent Status:%s%s', $username, $usernameToLog, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)), Sentry::getUser()->id, null, 'Edit User', 'info');
+				
 				// Prepare the success message
 				$success = Lang::get('users/messages.success.update');
 
@@ -333,6 +351,12 @@ class UsersController extends RootController {
 			// Delete the user
 			$user->delete();
 
+			// Log
+			$fullname = trim(Sentry::getUser()->fullName());
+			$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+			$myLog = new MyLog;
+			$myLog->insertLog(sprintf('User [%s] has deleted the User [%s].', $username, $user->username), Sentry::getUser()->id, null, 'Delete User', 'warning');
+			
 			// Prepare the success message
 			$success = Lang::get('users/messages.success.delete');
 
