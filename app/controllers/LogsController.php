@@ -87,8 +87,40 @@ class LogsController extends AuthorizedController {
 	 */
 	public function show($id)
 	{
-		// Grab all the logs
-		$log = MyLog::findOrFail($id)->with('domain', 'user')->first();
+		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		{
+			// Grab the log
+			$log = MyLog::where('id', '=', $id)->with('domain', 'user')->first();
+		}
+		else
+		{
+			if (Sentry::getUser()->hasAccess('log.all'))
+			{
+				// Grab the log, including Root
+				$log = MyLog::where('id', '=', $id)->with('domain', 'user')->first();
+			}
+			elseif (Sentry::getUser()->hasAccess('log.nonroot'))
+			{
+				// Grab the log for users that belong to groups other than Root
+				$groupIDs = Sentry::getGroupProvider()->createModel()->where('name', '<>', 'Root')->lists('id');
+				$userIDs = DB::table('users_groups')->whereIn('group_id', $groupIDs)->lists('user_id');
+				$log = MyLog::where('id', '=', $id)->whereIn('user_id', $userIDs)->with('domain', 'user')->first();
+			}
+			elseif (Sentry::getUser()->hasAccess('log.self'))
+			{
+				// Grab the log for this user only
+				$log = MyLog::where('id', '=', $id)->where('user_id', '=', Sentry::getUser()->id)->with('domain', 'user')->first();
+			}
+			else
+			{
+				App::abort(403);
+			}
+		}
+		
+		if ( ! $log)
+		{
+			return Redirect::route('logs.index')->with('error', Lang::get('logs/messages.error.log_not_found', compact('id')));
+		}
 
 		// Show the page
 		return View::make('app.logs.show', compact('log'));
@@ -124,6 +156,11 @@ class LogsController extends AuthorizedController {
 	 */
 	public function destroy($id)
 	{
+		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root'))))
+		{
+			App::abort(403);
+		}
+		
 		$log = MyLog::findOrFail($id);
 
 		// Delete the log

@@ -45,8 +45,19 @@
 		<tbody>
 			<tr class="{{ $log->type }}">
 				<td>{{ $log->id }}</td>
-				<td>{{ $log->domain->name }}</td>
-				<td>{{ $log->user->username . (trim($log->user->fullName()) ? sprintf(' (%s)', trim($log->user->fullName())) : '') }}</td>
+				
+				<td>
+					@if ($log->domain)
+						{{ $log->domain->name }}
+					@endif
+				</td>
+				
+				<td>
+					@if ($log->user)
+						{{ $log->user->username . (trim($log->user->fullName()) ? sprintf(' (%s)', trim($log->user->fullName())) : '') }}
+					@endif
+				</td>
+				
 				<td>{{ $log->event }}</td>
 				
 				<td>{{ $log->created_at->diffForHumans() }}</td>

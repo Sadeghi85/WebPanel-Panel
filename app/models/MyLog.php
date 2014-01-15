@@ -34,6 +34,23 @@ class MyLog extends Eloquent {
         return $query->orderBy('updated_at', 'desc');
     }
 	
-	
-	
+	public function insertLog($description, $userID = null, $domainID = null, $event = null, $cssType = null)
+    {
+		$this->description = $description;
+		$this->user_id = $userID;
+		$this->domain_id = $domainID;
+		$this->event = $event;
+		$this->type = $cssType;
+		
+		try
+		{
+			$this->save();
+		}
+		catch (\Exception $e)
+		{
+			return false;
+		}
+		
+		return true;
+    }
 }

@@ -49,8 +49,19 @@
 			@foreach ($logs as $log)
 				<tr class="{{ $log->type }}">
 					<td>{{ $log->id }}</td>
-					<td>{{ $log->domain->name }}</td>
-					<td>{{ $log->user->username . (trim($log->user->fullName()) ? sprintf(' (%s)', trim($log->user->fullName())) : '') }}</td>
+					
+					<td>
+						@if ($log->domain)
+							{{ $log->domain->name }}
+						@endif
+					</td>
+					
+					<td>
+						@if ($log->user)
+							{{ $log->user->username . (trim($log->user->fullName()) ? sprintf(' (%s)', trim($log->user->fullName())) : '') }}
+						@endif
+					</td>
+
 					<td>{{ $log->event }}</td>
 					<td>{{ Str::words(e($log->description), 10) }}</td>
 					
@@ -58,13 +69,10 @@
 					<td>
 						{{ Form::open(array('route' => array('logs.destroy', $log->id), 'method' => 'DELETE', 'id' => 'delete'.$log->id, 'name' => 'Log: '.$log->id)) }}
 							
-							@if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('log.show'))
-								<a href="{{ route('logs.show', $log->id) }}" class="btn btn-xs btn-default">@lang('button.show')</a>
-							@else
-								<span class="btn btn-xs btn-default disabled">@lang('button.show')</span>
-							@endif
 							
-							@if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('log.delete'))
+							<a href="{{ route('logs.show', $log->id) }}" class="btn btn-xs btn-default">@lang('button.show')</a>
+							
+							@if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
 								<button type="button" class="btn btn-xs btn-danger">@lang('button.delete')</button>
 							@else
 								<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>

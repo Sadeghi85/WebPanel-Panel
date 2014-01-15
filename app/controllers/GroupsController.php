@@ -74,6 +74,12 @@ class GroupsController extends RootController {
 			// Was the group created?
 			if (Sentry::getGroupProvider()->create($inputs))
 			{
+				// Log
+				$fullname = trim(Sentry::getUser()->fullName());
+				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+				$myLog = new MyLog;
+				$myLog->insertLog(sprintf('User [%s] has created the Group [%s].', $username, $inputs['name']), Sentry::getUser()->id, null, 'Create Group', 'info');
+				
 				// Redirect to the group management page
 				return Redirect::route('groups.index')->with('success', Lang::get('groups/messages.success.create'));
 			}
@@ -165,6 +171,8 @@ class GroupsController extends RootController {
 			return Rediret::route('groups.index')->with('error', Lang::get('groups/messages.error.group_not_found', compact('id')));
 		}
 
+		$groupNameToLog = $group->name;
+		
 		// Declare the rules for the form validation
 		$rules = array(
 			'name' => 'required|between:3,127|alpha_dash',
@@ -197,6 +205,12 @@ class GroupsController extends RootController {
 					$user->persist_code = null;
 					$user->save();
 				}
+				
+				// Log
+				$fullname = trim(Sentry::getUser()->fullName());
+				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+				$myLog = new MyLog;
+				$myLog->insertLog(sprintf('User [%s] has edited the Group [%s].%sCurrent Status:%s%s', $username, $groupNameToLog, "\r\n\r\n", "\r\n\r\n", print_r(Sentry::getGroupProvider()->findById($id)->toArray(), true)), Sentry::getUser()->id, null, 'Edit Group', 'info');
 			
 				// Redirect to the group page
 				return Redirect::route('groups.index')->with('success', Lang::get('groups/messages.success.update'));
@@ -231,6 +245,12 @@ class GroupsController extends RootController {
 
 			// Delete the group
 			$group->delete();
+			
+			// Log
+			$fullname = trim(Sentry::getUser()->fullName());
+			$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+			$myLog = new MyLog;
+			$myLog->insertLog(sprintf('User [%s] has deleted the Group [%s].', $username, $group->name), Sentry::getUser()->id, null, 'Delete Group', 'warning');
 
 			// Redirect to the group management page
 			return Redirect::back()->with('success', Lang::get('groups/messages.success.delete'));

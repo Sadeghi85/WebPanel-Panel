@@ -3,12 +3,11 @@
 return array(
 
 	'error' => array(
-		
+		'log_not_found' => 'Log [:id] does not exist.',
 		
 	),
 	
 	'success' => array(
-		'update' => 'User is successfully updated.',
 		'delete' => 'Log is successfully deleted.',
 	),
 	
