@@ -74,8 +74,6 @@
 							
 							@if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
 								<button type="button" class="btn btn-xs btn-danger">@lang('button.delete')</button>
-							@else
-								<span class="btn btn-xs btn-danger disabled">@lang('button.delete')</span>
 							@endif
 
 						{{ Form::close() }}

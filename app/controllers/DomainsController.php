@@ -72,7 +72,7 @@ class DomainsController extends AuthorizedController {
 	public function index()
 	{
 		// Grab all the domains for current user
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			$domains = Domain::paginate();
 		}
@@ -92,14 +92,14 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function create()
 	{
-		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.create')))
+		if ( ! (Group::isRoot() or Sentry::getUser()->hasAccess('domain.create')))
 		{
 			App::abort(403);
 		}
 		
 		$users = $selectedUsers = '';
 		
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			// Get all the available users
 			$users = Sentry::getUserProvider()->findAll();
@@ -125,7 +125,7 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function store()
 	{
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			$this->validationRules['users'] = 'custom.exists_array:users,id';
 		}
@@ -163,7 +163,7 @@ class DomainsController extends AuthorizedController {
 		
 		$domain->save();
 		
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			$users = Input::get('users', array());
 			
@@ -193,7 +193,7 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function edit($id)
 	{
-		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.edit')))
+		if ( ! (Group::isRoot() or Sentry::getUser()->hasAccess('domain.edit')))
 		{
 			App::abort(403);
 		}
@@ -220,7 +220,7 @@ class DomainsController extends AuthorizedController {
 	 */
 	public function destroy($id)
 	{
-		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('domain.delete')))
+		if ( ! (Group::isRoot() or Sentry::getUser()->hasAccess('domain.delete')))
 		{
 			App::abort(403);
 		}

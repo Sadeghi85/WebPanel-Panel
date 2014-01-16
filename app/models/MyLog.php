@@ -34,13 +34,23 @@ class MyLog extends Eloquent {
         return $query->orderBy('updated_at', 'desc');
     }
 	
-	public function insertLog($description, $userID = null, $domainID = null, $event = null, $cssType = null)
+	public static function hasAccessToLogs()
+	{
+		if (Sentry::check() and (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')) or Sentry::getUser()->hasAccess('log.self') or Sentry::getUser()->hasAccess('log.all') or Sentry::getUser()->hasAccess('log.nonroot')))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function insertLog($params)
     {
-		$this->description = $description;
-		$this->user_id = $userID;
-		$this->domain_id = $domainID;
-		$this->event = $event;
-		$this->type = $cssType;
+		$this->description = isset($params['description']) ? $params['description'] : '';
+		$this->user_id = isset($params['user_id']) ? $params['user_id'] : null;
+		$this->domain_id = isset($params['domain_id']) ? $params['domain_id'] : null;
+		$this->event = isset($params['event']) ? $params['event'] : null;
+		$this->type = isset($params['type']) ? $params['type'] : null;
 		
 		try
 		{

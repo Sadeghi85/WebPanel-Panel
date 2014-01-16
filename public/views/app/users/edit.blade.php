@@ -24,7 +24,7 @@
 	<h3>
 		@lang('users/messages.edit.header')
 
-		<a href="{{ URL::previous() }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('users/messages.edit.back')</a>
+		<a href="{{ route('users.index') }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('users/messages.edit.back')</a>
 	</h3>
 </div>
 

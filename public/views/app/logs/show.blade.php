@@ -24,7 +24,7 @@
 	<h3>
 		@lang('logs/messages.show.header')
 
-		<a href="{{ URL::previous() }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('logs/messages.show.back')</a>
+		<a href="{{ route('logs.index') }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('logs/messages.show.back')</a>
 	</h3>
 </div>
 

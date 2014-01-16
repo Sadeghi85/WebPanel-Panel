@@ -110,13 +110,19 @@ class UsersController extends RootController {
 				if ($assignGroup) { $user->addGroup($group); }
 				
 				// Log
-				$fullname = trim(Sentry::getUser()->fullName());
-				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
-				$newUserFullname = trim($user->fullName());
-				$newUserUsername = $user->username . ($newUserFullname ? '('.$newUserFullname.')' : '');
+				$usernameToLog = $user->usernameWithFullName();
+				$currentUserUsername = Sentry::getUser()->usernameWithFullName();
 				$user->load('groups');
 				$myLog = new MyLog;
-				$myLog->insertLog(sprintf('User [%s] has created the User [%s].%sCurrent Status:%s%s', $username, $newUserUsername, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)), Sentry::getUser()->id, null, 'Create User', 'info');
+				$myLog->insertLog(
+					array(
+							'description' => sprintf('User [%s] has created the User [%s].%sCurrent Status:%s%s', $currentUserUsername, $usernameToLog, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)),
+							'user_id'     => Sentry::getUser()->id,
+							'domain_id'   => null,
+							'event'       => 'Create User',
+							'type'        => 'info',
+					)
+				);
 
 				// Prepare the success message
 				$success = Lang::get('users/messages.success.create');
@@ -219,7 +225,7 @@ class UsersController extends RootController {
 			return Redirect::route('users.index')->with('error', $error);
 		}
 
-		$usernameToLog = $user->username;
+		$usernameToLog = $user->usernameWithFullName();
 		
 		$this->validationRules['username'] = 'required|between:3,127|alpha_dash|unique:users,username,'.$user->id;
 
@@ -299,11 +305,18 @@ class UsersController extends RootController {
 			if ($user->save())
 			{
 				// Log
-				$fullname = trim(Sentry::getUser()->fullName());
-				$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+				$currentUserUsername = Sentry::getUser()->usernameWithFullName();
 				$user->load('groups');
 				$myLog = new MyLog;
-				$myLog->insertLog(sprintf('User [%s] has edited the User [%s].%sCurrent Status:%s%s', $username, $usernameToLog, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)), Sentry::getUser()->id, null, 'Edit User', 'info');
+				$myLog->insertLog(
+					array(
+							'description' => sprintf('User [%s] has edited the User [%s].%sCurrent Status:%s%s', $currentUserUsername, $usernameToLog, "\r\n\r\n", "\r\n\r\n", print_r($user->toArray(), true)),
+							'user_id'     => Sentry::getUser()->id,
+							'domain_id'   => null,
+							'event'       => 'Edit User',
+							'type'        => 'info',
+					)
+				);
 				
 				// Prepare the success message
 				$success = Lang::get('users/messages.success.update');
@@ -352,10 +365,18 @@ class UsersController extends RootController {
 			$user->delete();
 
 			// Log
-			$fullname = trim(Sentry::getUser()->fullName());
-			$username = Sentry::getUser()->username . ($fullname ? '('.$fullname.')' : '');
+			$usernameToLog = $user->usernameWithFullName();
+			$currentUserUsername = Sentry::getUser()->usernameWithFullName();
 			$myLog = new MyLog;
-			$myLog->insertLog(sprintf('User [%s] has deleted the User [%s].', $username, $user->username), Sentry::getUser()->id, null, 'Delete User', 'warning');
+			$myLog->insertLog(
+				array(
+						'description' => sprintf('User [%s] has deleted the User [%s].', $currentUserUsername, $usernameToLog),
+						'user_id'     => Sentry::getUser()->id,
+						'domain_id'   => null,
+						'event'       => 'Delete User',
+						'type'        => 'warning',
+				)
+			);
 			
 			// Prepare the success message
 			$success = Lang::get('users/messages.success.delete');

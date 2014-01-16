@@ -49,7 +49,14 @@ class User extends SentryUserModel {
 	 */
 	public function fullName()
 	{
-		return "{$this->first_name} {$this->last_name}";
+		return trim("{$this->first_name} {$this->last_name}");
+	}
+	
+	public function usernameWithFullName()
+	{
+		$fullName = $this->fullName();
+		
+		return  $this->username . ($fullName ? ' ('.$fullName.')' : '');
 	}
 
 }

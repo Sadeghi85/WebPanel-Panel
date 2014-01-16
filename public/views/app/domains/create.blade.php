@@ -24,7 +24,7 @@
 	<h3>
 		@lang('domains/messages.create.header')
 
-		<a href="{{ URL::previous() }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('domains/messages.create.back')</a>
+		<a href="{{ route('domains.index') }}" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-circle-arrow-left"></i> @lang('domains/messages.create.back')</a>
 	</h3>
 </div>
 

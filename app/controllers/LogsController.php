@@ -25,7 +25,7 @@ class LogsController extends AuthorizedController {
 		// $items = Item::where_in('id', $item_ids)->paginate(10);
 
 		
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			// Grab all the logs
 			$logs = MyLog::newest()->with('domain', 'user')->paginate();
@@ -87,7 +87,7 @@ class LogsController extends AuthorizedController {
 	 */
 	public function show($id)
 	{
-		if (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root')))
+		if (Group::isRoot())
 		{
 			// Grab the log
 			$log = MyLog::where('id', '=', $id)->with('domain', 'user')->first();
@@ -156,7 +156,7 @@ class LogsController extends AuthorizedController {
 	 */
 	public function destroy($id)
 	{
-		if ( ! (Sentry::getUser()->inGroup(Sentry::findGroupByName('Root'))))
+		if ( ! Group::isRoot())
 		{
 			App::abort(403);
 		}
