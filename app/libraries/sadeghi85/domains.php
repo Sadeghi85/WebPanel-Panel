@@ -31,16 +31,21 @@ class Domains {
 		return trim(preg_replace(sprintf('#^\s*(?:%s)?\s*(.*?)(?:%s)?\s*$#is', preg_quote(self::$utilitiesBeginSignature), preg_quote(self::$utilitiesEndSignature)), '$1', implode("\n", $output)));
 	}
 	
-	public static function create($domain, $ipPort = '127.0.0.1:80', $activate = 0)
+	public static function create($params)
 	{
 		self::initialize();
+		
+		$domain = isset($params['domain']) ? $params['domain'] : 'example.com';
+		$ipPort = isset($params['ipPort']) ? $params['ipPort'] : '127.0.0.1:80';
+		$alias = isset($params['alias']) ? $params['alias'] : '[]';
+		$activate = isset($params['activate']) ? $params['activate'] : 0;
 		
 		$domain = escapeshellcmd(strtolower($domain));
 		
 ////////// Step 1: Check if domain directory already exists
 		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s/%s" 2>&1', self::$utilitiesPath, 'file_exists.sh', self::$basePath, $domain), $output, $returnVal))
 		{
-			// Domain directory doesn't. Will create in the next step.
+			// Domain directory doesn't exist. Will create it in the next step.
 			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
 			{
 				
@@ -202,7 +207,11 @@ class Domains {
 		unset($output);
 ////////// \Step 7
 
-/////////// Step 8: Creating Webalizer definition
+////////// Step 8: Setting the aliases
+
+////////// \Step 8
+
+/////////// Step 9: Creating Webalizer definition
 		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" 2>&1', self::$utilitiesPath, 'mkwebalizer.sh', $domain), $output, $returnVal))
 		{
 			// Can't create webalizer config. Why?
@@ -223,9 +232,9 @@ class Domains {
 		}
 		
 		unset($output);
-////////// \Step 8
+////////// \Step 9
 		
-/////////// Step 9: Activate or deactivate?
+/////////// Step 10: Activate or deactivate?
 		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'chstatus.sh', $domain, $activate), $output, $returnVal))
 		{
 			// Can't change status. Why?
@@ -246,7 +255,7 @@ class Domains {
 		}
 		
 		unset($output);
-////////// \Step 9
+////////// \Step 10
 		
 		
 		return array('status' => 0, 'line' => __LINE__, 'message' => '', 'output' => '');

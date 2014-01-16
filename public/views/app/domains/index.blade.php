@@ -57,7 +57,7 @@
 				<tr>
 					<td>{{ $domain->id }}</td>
 					<td>{{ $domain->name }}</td>
-					<td>{{ $domain->formatAlias() }}</td>
+					<td>{{ Domain::formatAlias($domain->alias) }}</td>
 					
 					<td>@lang('general.' . ($domain->isActivated() ? 'yes' : 'no'))</td>
 					<td>{{ $domain->created_at->diffForHumans() }}</td>

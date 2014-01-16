@@ -44,20 +44,10 @@ class Domain extends Eloquent {
 		}
 	}
 	
-	public function formatAlias($input = null)
+	public static function formatAlias($input)
 	{
-		if ($input)
+		if ($aliases = @json_decode(trim($input)))
 		{
-			$aliases = explode("\r\n", $input);
-			
-			$aliases = array_map('strtolower', $aliases);
-
-			return json_encode($aliases, JSON_FORCE_OBJECT);
-		}
-		else
-		{
-			$aliases = json_decode($this->alias);
-			
 			$formattedAlias = '';
 			
 			foreach ($aliases as $alias)
@@ -68,6 +58,14 @@ class Domain extends Eloquent {
 			$formattedAlias = trim(trim($formattedAlias), ',');
 			
 			return $formattedAlias;
+		}
+		else
+		{
+			$aliases = explode("\r\n", trim($input));
+			
+			$aliases = array_map('strtolower', $aliases);
+
+			return json_encode($aliases);
 		}
 	}
 	
