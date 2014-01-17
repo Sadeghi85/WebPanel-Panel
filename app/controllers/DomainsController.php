@@ -143,7 +143,7 @@ class DomainsController extends AuthorizedController {
 		
 		$domainName = strtolower(trim(Input::get('name')));
 		$domainIpPort = trim(Input::get('ipPort'));
-		$domainAlias = Domain::formatAlias(trim(Input::get('alias')));
+		$domainAlias = Domain::formatAlias(trim(Input::get('alias', '')));
 		$domainActivate = (int) Input::get('activated', 0);
 		
 		// Create domain

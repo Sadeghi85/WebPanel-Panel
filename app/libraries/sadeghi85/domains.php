@@ -208,7 +208,32 @@ class Domains {
 ////////// \Step 7
 
 ////////// Step 8: Setting the aliases
-
+		$aliases = json_decode($alias);
+		$alias = trim(implode(' ', $aliases));
+		
+		if ($alias)
+		{
+			if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'set_alias.sh', $domain, $alias), $output, $returnVal))
+			{
+				// Can't set aliases. Why?
+				if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
+				{
+					return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t set aliases.', 'output' => self::formatOutput($output));
+				}
+				// Problem. "set_alias.sh" didn't execute to the last line.
+				else
+				{
+					return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "set_alias.sh" utility.', 'output' => self::formatOutput($output));
+				}
+			}
+			// Aliases were set successfully.
+			else
+			{
+			
+			}
+			
+			unset($output);
+		}
 ////////// \Step 8
 
 /////////// Step 9: Creating Webalizer definition

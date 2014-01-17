@@ -81,7 +81,7 @@ return array(
 	*/
 
 	'custom' => array(
-		'domain' => 'The :attribute must be a valid domain.',
+		'domain' => 'The :attribute must be valid domain.',
 		'exists_array' => 'The selected :attribute is invalid.',
 	
 	
