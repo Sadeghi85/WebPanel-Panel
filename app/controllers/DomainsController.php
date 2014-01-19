@@ -18,7 +18,12 @@ class DomainsController extends AuthorizedController {
 			
 			foreach ($inputs as $input)
 			{
-				if ( ! preg_match('#^([a-z0-9][-a-z0-9]*\.)+[a-z]{2,5}$#i', $input))
+				if (preg_match('#^\d+(?:\.\d+)+$#', $input))
+				{
+					return false;
+				}
+				
+				if ( ! preg_match('#^(?=.{3,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|\b-){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|\b-){0,61}[0-9A-Za-z])?)+$#', $input))
 				{
 					return false;
 				}
