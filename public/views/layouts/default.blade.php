@@ -75,7 +75,7 @@
 			
 				<ul class="nav nav-tabs">
 					<li class="{{ Route::currentRouteName() == 'overview.index' ? 'active' : '' }}"><a href="{{ URL::Route('overview.index') }}"><strong>Overview</strong></a></li>
-					<li class="{{ Request::is('*domains*') ? 'active' : '' }}"><a href="{{ URL::Route('domains.index') }}"><strong>Domains</strong></a></li>
+					<li class="{{ Request::is('*sites*') ? 'active' : '' }}"><a href="{{ URL::Route('sites.index') }}"><strong>Sites</strong></a></li>
 					
 					@if (MyLog::hasAccessToLogs())
 					<li class="{{ Request::is('*logs*') ? 'active' : '' }}"><a href="{{ URL::Route('logs.index') }}"><strong>Logs</strong></a></li>

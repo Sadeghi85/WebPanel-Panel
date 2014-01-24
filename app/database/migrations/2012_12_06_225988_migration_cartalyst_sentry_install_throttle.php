@@ -44,7 +44,9 @@ class MigrationCartalystSentryInstallThrottle extends Migration {
 			// We'll need to ensure that MySQL uses the InnoDB engine to
 			// support the indexes, other engines aren't affected.
 			$table->engine = 'InnoDB';
+			
 			$table->index('user_id');
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 		});
 	}
 

@@ -2,21 +2,21 @@
 
 return array(
 
-	'Domain' => array(
+	'Site' => array(
 		array(
-			'permission' => 'domain.create',
+			'permission' => 'site.create',
 			'label'      => 'Create',
 			'allow'      => 0,
 		),
 		
 		array(
-			'permission' => 'domain.edit',
+			'permission' => 'site.edit',
 			'label'      => 'Edit',
 			'allow'      => 0,
 		),
 		
 		array(
-			'permission' => 'domain.delete',
+			'permission' => 'site.delete',
 			'label'      => 'Delete',
 			'allow'      => 0,
 		),

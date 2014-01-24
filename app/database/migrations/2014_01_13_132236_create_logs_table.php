@@ -16,13 +16,23 @@ class CreateLogsTable extends Migration {
 		{
 			$table->increments('id');
 			
+			// We'll need to ensure that MySQL uses the InnoDB engine to
+			// support the indexes, other engines aren't affected.
+			$table->engine = 'InnoDB';
+			
 			// ->nullable() on these foreign keys is ok because the relation is one to many
+			$table->integer('site_id')->unsigned()->nullable();
 			$table->integer('user_id')->unsigned()->nullable();
-			$table->integer('domain_id')->unsigned()->nullable();
 			
 			$table->string('event')->nullable();
 			$table->text('description');
 			$table->string('type')->nullable();
+			
+			$table->index('site_id');
+			$table->index('user_id');
+			
+			$table->foreign('site_id')->references('id')->on('sites')->onDelete('set null');
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 			
 			$table->timestamps();
 		});

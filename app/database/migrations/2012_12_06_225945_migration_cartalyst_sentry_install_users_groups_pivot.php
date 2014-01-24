@@ -38,6 +38,12 @@ class MigrationCartalystSentryInstallUsersGroupsPivot extends Migration {
 			// support the indexes, other engines aren't affected.
 			$table->engine = 'InnoDB';
 			$table->primary(array('user_id', 'group_id'));
+			
+			$table->index('user_id');
+			$table->index('group_id');
+			
+			$table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+			$table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
 		});
 	}
 

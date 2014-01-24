@@ -100,6 +100,10 @@ return array(
 	|
 	*/
 
-	'attributes' => array(),
+	'attributes' => array(
+	
+		'aliases' => 'Alias',
+	
+	),
 
 );

@@ -1,9 +1,9 @@
-<?php namespace Libraries\Sadeghi85;
+<?php namespace Libraries\Sadeghi85\Domains;
 
 // use AdminController;
 // use View;
 
-class Domains {
+class Create {
 
 	private static $utilitiesPath = '/opt/webpanel/cmd/utilities';
 	private static $utilitiesBeginSignature = '*webpanel*';
