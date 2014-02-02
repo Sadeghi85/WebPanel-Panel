@@ -35,7 +35,7 @@
 		<thead>
 		<tr>
 			<th class="col-md-2">@lang('logs/messages.show.id')</th>
-			<th class="col-md-9">@lang('logs/messages.show.domain')</th>
+			<th class="col-md-9">@lang('logs/messages.show.site')</th>
 			<th class="col-md-9">@lang('logs/messages.show.username')</th>
 			<th class="col-md-7">@lang('logs/messages.show.event')</th>
 
@@ -47,8 +47,8 @@
 				<td>{{ $log->id }}</td>
 				
 				<td>
-					@if ($log->domain)
-						{{ $log->domain->name }}
+					@if ($log->site)
+						{{ $log->site->name }}
 					@endif
 				</td>
 				
@@ -77,7 +77,7 @@
 		</thead>
 		<tbody>
 			<tr class="{{ $log->type }}">
-				<td><pre>{{ e($log->description) }}</pre></td>
+				<td>{{ $log->description }}</td>
 			</tr>
 		</tbody>
 	</table>

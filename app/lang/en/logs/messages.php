@@ -18,7 +18,7 @@ return array(
 		'header' => 'Logs',
 		
 		'id' => 'Id',
-		'domain' => 'Domain',
+		'site' => 'Site',
 		'username' => 'Username',
 		'event' => 'Event',
 		'description' => 'Description',

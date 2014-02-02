@@ -180,18 +180,36 @@ class SitesController extends AuthorizedController {
 			}
 		}
 
-		dd('<a href="'.URL::previous().'">validation succeed</a>');
-
-		// Create domain
-		$status = \Libraries\Sadeghi85\Domains\Create::create(
+		if ( ! \Libraries\Sadeghi85\Sites\Shell::FindNextTag($errorMessage, $siteTag))
+		{
+			// Log
+			$currentUserUsername = Sentry::getUser()->usernameWithFullName();
+			$myLog = new MyLog;
+			$myLog->insertLog(
+				array(
+						'description' => $errorMessage,
+						'user_id'     => Sentry::getUser()->id,
+						'site_id'   => null,
+						'event'       => 'Create Site',
+						'type'        => 'danger',
+				)
+			);
+			
+			// Redirect to the user creation page
+			return Redirect::back()->withInput()->with('error', $errorMessage);
+		}
+		
+		// Create Site
+		$status = \Libraries\Sadeghi85\Sites\Create::create(
 			array(
-				'domain'   => $domainName,
-				'port'   => $domainPort,
-				'alias'    => $domainAlias,
-				'activate' => $domainActivate,
+				'siteServerName'   => $siteServerName,
+				'sitePort'   => $sitePort,
+				'siteAliases'    => $siteAliases,
+				'siteActivate' => $siteActivate,
+				'siteTag' => $siteTag,
 			)
 		);
-		
+		dd($status['message']);
 		if ($status['status'] !== 0)
 		{
 			$errorMessage = (isset($status['message']) and $status['message']) ? $status['message'] : '';

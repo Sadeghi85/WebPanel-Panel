@@ -28,26 +28,26 @@ class LogsController extends AuthorizedController {
 		if (Group::isRoot())
 		{
 			// Grab all the logs
-			$logs = MyLog::newest()->with('domain', 'user')->paginate();
+			$logs = MyLog::newest()->with('site', 'user')->paginate();
 		}
 		else
 		{
 			if (Sentry::getUser()->hasAccess('log.all'))
 			{
 				// Grab all the logs including Root
-				$logs = MyLog::newest()->with('domain', 'user')->paginate();
+				$logs = MyLog::newest()->with('site', 'user')->paginate();
 			}
 			elseif (Sentry::getUser()->hasAccess('log.nonroot'))
 			{
 				// Grab all the logs for users that belong to groups other than Root
 				$groupIDs = Sentry::getGroupProvider()->createModel()->where('name', '<>', 'Root')->lists('id');
 				$userIDs = DB::table('users_groups')->whereIn('group_id', $groupIDs)->lists('user_id');
-				$logs = MyLog::whereIn('user_id', $userIDs)->newest()->with('domain', 'user')->paginate();
+				$logs = MyLog::whereIn('user_id', $userIDs)->newest()->with('site', 'user')->paginate();
 			}
 			elseif (Sentry::getUser()->hasAccess('log.self'))
 			{
 				// Grab all the logs for this user only
-				$logs = MyLog::where('user_id', '=', Sentry::getUser()->id)->newest()->with('domain', 'user')->paginate();
+				$logs = MyLog::where('user_id', '=', Sentry::getUser()->id)->newest()->with('site', 'user')->paginate();
 			}
 			else
 			{
@@ -90,26 +90,26 @@ class LogsController extends AuthorizedController {
 		if (Group::isRoot())
 		{
 			// Grab the log
-			$log = MyLog::where('id', '=', $id)->with('domain', 'user')->first();
+			$log = MyLog::where('id', '=', $id)->with('site', 'user')->first();
 		}
 		else
 		{
 			if (Sentry::getUser()->hasAccess('log.all'))
 			{
 				// Grab the log, including Root
-				$log = MyLog::where('id', '=', $id)->with('domain', 'user')->first();
+				$log = MyLog::where('id', '=', $id)->with('site', 'user')->first();
 			}
 			elseif (Sentry::getUser()->hasAccess('log.nonroot'))
 			{
 				// Grab the log for users that belong to groups other than Root
 				$groupIDs = Sentry::getGroupProvider()->createModel()->where('name', '<>', 'Root')->lists('id');
 				$userIDs = DB::table('users_groups')->whereIn('group_id', $groupIDs)->lists('user_id');
-				$log = MyLog::where('id', '=', $id)->whereIn('user_id', $userIDs)->with('domain', 'user')->first();
+				$log = MyLog::where('id', '=', $id)->whereIn('user_id', $userIDs)->with('site', 'user')->first();
 			}
 			elseif (Sentry::getUser()->hasAccess('log.self'))
 			{
 				// Grab the log for this user only
-				$log = MyLog::where('id', '=', $id)->where('user_id', '=', Sentry::getUser()->id)->with('domain', 'user')->first();
+				$log = MyLog::where('id', '=', $id)->where('user_id', '=', Sentry::getUser()->id)->with('site', 'user')->first();
 			}
 			else
 			{

@@ -35,7 +35,7 @@
 	  	<thead>
           <tr>
             <th class="col-md-2">@lang('logs/messages.index.id')</th>
-			<th class="col-md-9">@lang('logs/messages.index.domain')</th>
+			<th class="col-md-9">@lang('logs/messages.index.site')</th>
 			<th class="col-md-9">@lang('logs/messages.index.username')</th>
 			<th class="col-md-7">@lang('logs/messages.index.event')</th>
 			<th class="col-md-20">@lang('logs/messages.index.description')</th>
@@ -51,8 +51,8 @@
 					<td>{{ $log->id }}</td>
 					
 					<td>
-						@if ($log->domain)
-							{{ $log->domain->name }}
+						@if ($log->site)
+							{{ $log->site->name }}
 						@endif
 					</td>
 					
@@ -63,7 +63,7 @@
 					</td>
 
 					<td>{{ $log->event }}</td>
-					<td>{{ Str::words(e($log->description), 10) }}</td>
+					<td>{{ Str::words(strip_tags($log->description), 10) }}</td>
 					
 					<td>{{ $log->created_at->diffForHumans() }}</td>
 					<td>

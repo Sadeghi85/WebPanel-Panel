@@ -24,9 +24,9 @@ class MyLog extends Eloquent {
      *
      * @return Model
      */
-    public function domain()
+    public function site()
     {
-		return $this->belongsTo('Domain');
+		return $this->belongsTo('Site');
     }
 	
 	public function scopeNewest($query)
@@ -48,7 +48,7 @@ class MyLog extends Eloquent {
     {
 		$this->description = isset($params['description']) ? $params['description'] : '';
 		$this->user_id = isset($params['user_id']) ? $params['user_id'] : null;
-		$this->domain_id = isset($params['domain_id']) ? $params['domain_id'] : null;
+		$this->site_id = isset($params['site_id']) ? $params['site_id'] : null;
 		$this->event = isset($params['event']) ? $params['event'] : null;
 		$this->type = isset($params['type']) ? $params['type'] : null;
 		
