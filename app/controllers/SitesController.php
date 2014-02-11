@@ -180,63 +180,24 @@ class SitesController extends AuthorizedController {
 			}
 		}
 
+		// Find next available site tag
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::FindNextTag($errorMessage, $siteTag))
 		{
-			// Log
-			$currentUserUsername = Sentry::getUser()->usernameWithFullName();
-			$myLog = new MyLog;
-			$myLog->insertLog(
-				array(
-						'description' => $errorMessage,
-						'user_id'     => Sentry::getUser()->id,
-						'site_id'   => null,
-						'event'       => 'Create Site',
-						'type'        => 'danger',
-				)
-			);
-			
-			// Redirect to the user creation page
 			return Redirect::back()->withInput()->with('error', $errorMessage);
 		}
 		
 		// Create Site
-		$status = \Libraries\Sadeghi85\Sites\Create::create(
-			array(
-				'siteServerName'   => $siteServerName,
-				'sitePort'   => $sitePort,
-				'siteAliases'    => $siteAliases,
-				'siteActivate' => $siteActivate,
-				'siteTag' => $siteTag,
-			)
-		);
-		dd($status['message']);
-		if ($status['status'] !== 0)
+		if ( ! \Libraries\Sadeghi85\Sites\Create::create($errorMessage, array(
+			'siteServerName'   => $siteServerName,
+			'sitePort'   => $sitePort,
+			'siteAliases'    => $siteAliases,
+			'siteTag' => $siteTag,
+			'siteActivate' => $siteActivate,
+		)))
 		{
-			$errorMessage = (isset($status['message']) and $status['message']) ? $status['message'] : '';
-			$errorCode = (isset($status['line']) and $status['line']) ? $status['line'] : '';
-			$errorOutput = (isset($status['output']) and $status['output']) ? $status['output'] : '';
-			
-			// Log
-			$currentUserUsername = Sentry::getUser()->usernameWithFullName();
-			$myLog = new MyLog;
-			$myLog->insertLog(
-				array(
-						'description' => sprintf('Code %s: %s%sDetails:%s%s', $errorCode, $errorMessage, "\r\n\r\n", "\r\n\r\n", $errorOutput),
-						'user_id'     => Sentry::getUser()->id,
-						'domain_id'   => null,
-						'event'       => 'Create Domain',
-						'type'        => 'danger',
-				)
-			);
-				
-			$error = sprintf('Code %s: %s', $errorCode, $errorMessage);
-			
-			$error .= ($errorOutput ? sprintf(' <br><br><pre><code>%s</code></pre>', $errorOutput) : '');
-			
-			// Redirect to the user creation page
-			return Redirect::back()->withInput()->with('error', $error);
+			return Redirect::back()->withInput()->with('error', $errorMessage);
 		}
-		
+		dd($errorMessage);
 		try
 		{
 			// Register domain in database

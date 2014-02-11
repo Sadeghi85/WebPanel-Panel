@@ -29,7 +29,7 @@ class Create {
 		return trim(preg_replace(sprintf('#^\s*(?:%s)?\s*(.*?)(?:%s)?\s*$#is', preg_quote(self::$utilitiesBeginSignature), preg_quote(self::$utilitiesEndSignature)), '$1', implode("\n", $output)));
 	}
 	
-	public static function create($params)
+	public static function create(&$errorMessage, $params)
 	{
 		self::initialize();
 		
@@ -44,74 +44,56 @@ class Create {
 ////////// Step 1: Create the user
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::createUser($errorMessage, $siteTag, $siteAliases))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 1
 
 ////////// Step 2: Create the site and web directory and index.php
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::createSiteDir($errorMessage, $siteTag, $siteServerName))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 2
 
 ////////// Step 3: Creating PHP pool definition
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::CreatePHPPool($errorMessage, $siteTag, $siteServerName))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 3
 
 ////////// Step 4: Creating Apache virtualhost definition
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::CreateApacheVhost($errorMessage, $siteTag, $siteServerName, $siteAliases, $sitePort))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 4
 
 ////////// Step 5: Creating Nginx virtualhost definition
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::CreateNginxVhost($errorMessage, $siteTag, $siteServerName, $siteAliases, $sitePort))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 5
 
 ////////// Step 6: Creating Webalizer definition
 		if ( ! \Libraries\Sadeghi85\Sites\Shell::CreateWebalizerConfig($errorMessage, $siteTag, $siteServerName))
 		{
-			return array('status' => 1, 'message' => $errorMessage);
+			return false;
 		}
 ////////// \Step 6
 
+////////// Step 7: Activate site or not?
+		if ($siteActivate)
+		{
+			\Libraries\Sadeghi85\Sites\Shell::ActivateSite($errorMessage, $siteTag, $siteServerName);
+		}
+////////// \Step 7		
+		
 		dd($siteTag);
 
-				
-/////////// Step 10: Activate or deactivate?
-		if (self::$utilitiesBeginSignature != exec(sprintf('sudo sh "%s/%s" "%s" "%s" 2>&1', self::$utilitiesPath, 'chstatus.sh', $domain, $activate), $output, $returnVal))
-		{
-			// Can't change status. Why?
-			if (preg_match(sprintf('#%s#', self::$utilitiesEndSignature), implode("\n", $output)))
-			{
-				return array('status' => 1, 'line' => __LINE__, 'message' => 'Couldn\'t '.($activate ? 'activate' : 'diactivate').' this domain.', 'output' => self::formatOutput($output));
-			}
-			// Problem. "chstatus.sh" didn't execute to the last line.
-			else
-			{
-				return array('status' => 1, 'line' => __LINE__, 'message' => 'Critical error in executing "chstatus.sh" utility.', 'output' => self::formatOutput($output));
-			}
-		}
-		// Status changed successfully.
-		else
-		{
-		
-		}
-		
-		unset($output);
-////////// \Step 10
 		
 		
-		return array('status' => 0, 'line' => __LINE__, 'message' => '', 'output' => '');
+		return true;
 	}
-
-
 }

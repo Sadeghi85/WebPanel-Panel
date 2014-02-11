@@ -44,17 +44,19 @@ class MyLog extends Eloquent {
 		return false;
 	}
 	
-	public function insertLog($params)
+	public static function insertLog($params)
     {
-		$this->description = isset($params['description']) ? $params['description'] : '';
-		$this->user_id = isset($params['user_id']) ? $params['user_id'] : null;
-		$this->site_id = isset($params['site_id']) ? $params['site_id'] : null;
-		$this->event = isset($params['event']) ? $params['event'] : null;
-		$this->type = isset($params['type']) ? $params['type'] : null;
+		$myLog = new MyLog;
+		
+		$myLog->description = isset($params['description']) ? $params['description'] : '';
+		$myLog->user_id = isset($params['user_id']) ? $params['user_id'] : null;
+		$myLog->site_id = isset($params['site_id']) ? $params['site_id'] : null;
+		$myLog->event = isset($params['event']) ? $params['event'] : null;
+		$myLog->type = isset($params['type']) ? $params['type'] : null;
 		
 		try
 		{
-			$this->save();
+			$myLog->save();
 		}
 		catch (\Exception $e)
 		{
@@ -63,4 +65,32 @@ class MyLog extends Eloquent {
 		
 		return true;
     }
+	
+	public static function danger($params)
+	{
+		$params['type'] = 'danger';
+		
+		self::insertLog($params);
+	}
+	
+	public static function warning($params)
+	{
+		$params['type'] = 'warning';
+		
+		self::insertLog($params);
+	}
+	
+	public static function info($params)
+	{
+		$params['type'] = 'info';
+		
+		self::insertLog($params);
+	}
+	
+	public static function success($params)
+	{
+		$params['type'] = 'success';
+		
+		self::insertLog($params);
+	}
 }
